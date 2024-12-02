@@ -1,0 +1,15 @@
+txnbi:
+  host: "127.0.0.1"
+  port: 8080
+
+
+mysql:
+   user: "root"
+   password: "123456aa"
+   host: "127.0.0.1"
+   port: 3306
+   dbname: "txnbi"
+   charset: "utf8mb4"
+   location: "Local"
+   parse_time: "True"
+
