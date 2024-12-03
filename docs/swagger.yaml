@@ -1,4 +1,47 @@
 basePath: /
+definitions:
+  api.UserLoginReq:
+    properties:
+      account:
+        type: string
+      password:
+        type: string
+    required:
+    - account
+    - password
+    type: object
+  api.UserLoginResp:
+    properties:
+      message:
+        type: string
+      statusCode:
+        type: integer
+      token:
+        type: string
+    type: object
+  api.UserRegisterReq:
+    properties:
+      account:
+        type: string
+      password:
+        type: string
+    required:
+    - account
+    - password
+    type: object
+  api.UserRegisterResp:
+    properties:
+      message:
+        description: |-
+          required: true
+          example: 登陆成功
+        type: string
+      statusCode:
+        description: |-
+          required: true
+          example: 0
+        type: integer
+    type: object
 host: localhost:8080
 info:
   contact: {}
@@ -10,23 +53,19 @@ paths:
     post:
       description: 登陆界面中的用户登陆接口
       parameters:
-      - description: 用户账号
-        in: formData
-        name: account
+      - description: 登陆信息
+        in: body
+        name: LoginInfo
         required: true
-        type: string
-      - description: 用户密码
-        in: formData
-        name: password
-        required: true
-        type: string
+        schema:
+          $ref: '#/definitions/api.UserLoginReq'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            type: string
+            $ref: '#/definitions/api.UserLoginResp'
       summary: 用户登陆接口
       tags:
       - user
@@ -34,23 +73,19 @@ paths:
     post:
       description: 登陆界面中的用户注册接口
       parameters:
-      - description: 用户账号
-        in: formData
-        name: account
+      - description: 注册信息
+        in: body
+        name: RegisterInfo
         required: true
-        type: string
-      - description: 用户密码
-        in: formData
-        name: password
-        required: true
-        type: string
+        schema:
+          $ref: '#/definitions/api.UserRegisterReq'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            type: string
+            $ref: '#/definitions/api.UserRegisterResp'
       summary: 用户注册接口
       tags:
       - user

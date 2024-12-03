@@ -16,7 +16,11 @@ type UserRegisterReq struct {
 	Password string `json:"password" form:"password" binding:"required"`
 }
 
-type UserResisterResp struct {
-	StatusCode int    `json:"statusCode" form:"statusCode"`
-	Message    string `json:"message" form:"message"`
+type UserRegisterResp struct {
+	// required: true
+	// example: 0
+	StatusCode int `json:"statusCode" form:"statusCode"`
+	// required: true
+	// example: 登陆成功
+	Message string `json:"message" form:"message"`
 }

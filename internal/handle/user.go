@@ -14,9 +14,8 @@ import (
 //	@Description	登陆界面中的用户登陆接口
 //	@Tags			user
 //	@Produce		json
-//	@Param			account		formData	string	true	"用户账号"
-//	@Param			password	formData	string	true	"用户密码"
-//	@Success		200			{string}	{string}
+//	@Param			LoginInfo	body		api.UserLoginReq	true	"登陆信息"
+//	@Success		200			{object}	api.UserLoginResp
 //	@Router			/user/login [post]
 func UserLogin(ctx *gin.Context) {
 	var req api.UserLoginReq
@@ -41,23 +40,22 @@ func UserLogin(ctx *gin.Context) {
 //	@Description	登陆界面中的用户注册接口
 //	@Tags			user
 //	@Produce		json
-//	@Param			account		formData	string	true	"用户账号"
-//	@Param			password	formData	string	true	"用户密码"
-//	@Success		200			{string}	{string}
+//	@Param			RegisterInfo	body		api.UserRegisterReq	true	"注册信息"
+//	@Success		200				{object}	api.UserRegisterResp
 //	@Router			/user/register [post]
 func UserRegister(ctx *gin.Context) {
 	var req api.UserRegisterReq
 	if err := ctx.ShouldBind(&req); err != nil {
-		ctx.JSON(http.StatusOK, api.UserResisterResp{StatusCode: 1, Message: err.Error()})
+		ctx.JSON(http.StatusOK, api.UserRegisterResp{StatusCode: 1, Message: err.Error()})
 		return
 	}
 
 	err := biz.UserRegister(req.Account, req.Password)
 	if err != nil {
 		fmt.Println(err)
-		ctx.JSON(http.StatusOK, api.UserResisterResp{StatusCode: 1, Message: err.Error()})
+		ctx.JSON(http.StatusOK, api.UserRegisterResp{StatusCode: 1, Message: err.Error()})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, api.UserResisterResp{StatusCode: 0, Message: "注册成功！"})
+	ctx.JSON(http.StatusOK, api.UserRegisterResp{StatusCode: 0, Message: "注册成功！"})
 }

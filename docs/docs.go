@@ -27,25 +27,20 @@ const docTemplate = `{
                 "summary": "用户登陆接口",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "用户账号",
-                        "name": "account",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "用户密码",
-                        "name": "password",
-                        "in": "formData",
-                        "required": true
+                        "description": "登陆信息",
+                        "name": "LoginInfo",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.UserLoginReq"
+                        }
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/api.UserLoginResp"
                         }
                     }
                 }
@@ -63,27 +58,81 @@ const docTemplate = `{
                 "summary": "用户注册接口",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "用户账号",
-                        "name": "account",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "用户密码",
-                        "name": "password",
-                        "in": "formData",
-                        "required": true
+                        "description": "注册信息",
+                        "name": "RegisterInfo",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.UserRegisterReq"
+                        }
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/api.UserRegisterResp"
                         }
                     }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "api.UserLoginReq": {
+            "type": "object",
+            "required": [
+                "account",
+                "password"
+            ],
+            "properties": {
+                "account": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.UserLoginResp": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "statusCode": {
+                    "type": "integer"
+                },
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.UserRegisterReq": {
+            "type": "object",
+            "required": [
+                "account",
+                "password"
+            ],
+            "properties": {
+                "account": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.UserRegisterResp": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "description": "required: true\nexample: 登陆成功",
+                    "type": "string"
+                },
+                "statusCode": {
+                    "description": "required: true\nexample: 0",
+                    "type": "integer"
                 }
             }
         }

@@ -11,6 +11,7 @@ import (
 var L zerolog.Logger
 
 func init() {
+	// todo 优化输出结构
 	r := zerolog.ConsoleWriter{
 		Out:        os.Stderr,
 		TimeFormat: time.RFC3339,
