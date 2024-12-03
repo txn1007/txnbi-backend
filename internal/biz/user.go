@@ -7,6 +7,7 @@ import (
 	"txnbi-backend/conf"
 	"txnbi-backend/internal/store"
 	"txnbi-backend/pkg/jwt"
+	"txnbi-backend/tool/encry"
 )
 
 func UserLogin(account string, password string) (token string, err error) {
@@ -17,7 +18,7 @@ func UserLogin(account string, password string) (token string, err error) {
 		return "", fmt.Errorf("account not exist")
 	}
 	// 检查密码是否正确
-	if ac.UserPassword != password {
+	if ac.UserPassword != encry.EncodeByMd5(password) {
 		return "", fmt.Errorf("password error")
 	}
 	return jwt.SignForUser(ac.ID, ac.UserAccount, conf.JWTCfg.SignKey), nil
@@ -32,7 +33,8 @@ func UserRegister(account string, password string) error {
 		return err
 	}
 
-	err = store.CreateUser(account, password, "user")
+	// 加密用户密码
+	err = store.CreateUser(account, encry.EncodeByMd5(password), "user")
 	if err != nil {
 		return err
 	}
