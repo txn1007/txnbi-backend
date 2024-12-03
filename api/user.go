@@ -19,5 +19,4 @@ type UserRegisterReq struct {
 type UserResisterResp struct {
 	StatusCode int    `json:"statusCode" form:"statusCode"`
 	Message    string `json:"message" form:"message"`
-	Token      string `json:"token" form:"token"`
 }

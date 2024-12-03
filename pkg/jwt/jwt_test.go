@@ -7,11 +7,11 @@ import (
 func TestJWT(t *testing.T) {
 	signKey := "123"
 
-	username := "test"
-	userID := 1
+	userAccount := "test"
+	var userID int64 = 123
 
 	//生成token
-	token := SignForUser(userID, username, signKey)
+	token := SignForUser(userID, userAccount, signKey)
 
 	//解析 token，并判断能否正确获取 token 中的用户信息
 	id, u, err := ParseUserToken(token, signKey)
@@ -21,8 +21,8 @@ func TestJWT(t *testing.T) {
 	if id != userID {
 		t.Errorf("expect user id %d, got %d", userID, id)
 	}
-	if u != username {
-		t.Errorf("expect username %s, got %s", u, username)
+	if u != userAccount {
+		t.Errorf("expect userAccount %s, got %s", u, userAccount)
 	}
 
 }

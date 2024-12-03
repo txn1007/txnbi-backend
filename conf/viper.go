@@ -16,6 +16,8 @@ func init() {
 	GetTxnBIConfig()
 	// 初始化 MySQL
 	GetMySQLConfig()
+	// 初始化 JWT
+	GetJWTConfig()
 }
 
 func GetMySQLConfig() {

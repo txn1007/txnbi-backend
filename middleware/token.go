@@ -15,7 +15,7 @@ func AuthUserToken() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		id, username, err := jwt.ParseUserToken(token, conf.JWTCfg.SignKey)
+		id, userAccount, err := jwt.ParseUserToken(token, conf.JWTCfg.SignKey)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"statusCode": 1, "message": err.Error()})
 			c.Abort()
@@ -23,7 +23,7 @@ func AuthUserToken() gin.HandlerFunc {
 		}
 
 		c.Set("userID", id)
-		c.Set("username", username)
+		c.Set("userAccount", userAccount)
 		c.Next()
 	}
 }

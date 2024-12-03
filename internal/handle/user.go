@@ -26,13 +26,13 @@ func UserLogin(ctx *gin.Context) {
 		return
 	}
 
-	err := biz.UserLogin(req.Account, req.Password)
+	token, err := biz.UserLogin(req.Account, req.Password)
 	if err != nil {
 		fmt.Println(err)
 		ctx.JSON(http.StatusOK, api.UserLoginResp{StatusCode: 1, Message: err.Error()})
 		return
 	}
-	ctx.JSON(http.StatusOK, api.UserLoginResp{StatusCode: 0, Message: "登陆成功"})
+	ctx.JSON(http.StatusOK, api.UserLoginResp{StatusCode: 0, Message: "登陆成功", Token: token})
 }
 
 // UserRegister godoc

@@ -7,13 +7,13 @@ import (
 	"time"
 )
 
-func SignForUser(userID int, username string, signKey string) string {
+func SignForUser(userID int64, userAccount string, signKey string) string {
 	t := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"iss": "txnbi",
 		// 有效期为 一周
-		"exp":      time.Now().Add(7 * 24 * time.Hour).Unix(),
-		"userID":   strconv.Itoa(userID),
-		"username": username,
+		"exp":         time.Now().Add(7 * 24 * time.Hour).Unix(),
+		"userID":      strconv.FormatInt(userID, 10),
+		"userAccount": userAccount,
 	})
 	token, err := t.SignedString([]byte(signKey))
 	if err != nil {
@@ -22,7 +22,7 @@ func SignForUser(userID int, username string, signKey string) string {
 	return token
 }
 
-func ParseUserToken(token string, signKey string) (userID int, username string, err error) {
+func ParseUserToken(token string, signKey string) (userID int64, userAccount string, err error) {
 	t, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
@@ -38,9 +38,9 @@ func ParseUserToken(token string, signKey string) (userID int, username string, 
 		return 0, "", fmt.Errorf("invalid token")
 	}
 	// 获取用户信息
-	userID, err = strconv.Atoi(claims["userID"].(string))
+	userID, err = strconv.ParseInt(claims["userID"].(string), 10, 64)
 	if err != nil {
 		return 0, "", err
 	}
-	return userID, claims["username"].(string), nil
+	return userID, claims["userAccount"].(string), nil
 }
