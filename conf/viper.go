@@ -35,3 +35,8 @@ func GetTxnBIConfig() {
 	TxnBICfg.Host = viper.GetString("txnbi.host")
 	TxnBICfg.Port = viper.GetInt("txnbi.port")
 }
+
+func GetJWTConfig() {
+	JWTCfg = new(JWTConfig)
+	JWTCfg.SignKey = viper.GetString("jwt.sign_key")
+}

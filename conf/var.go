@@ -16,9 +16,15 @@ type TxnBIConfig struct {
 	Port int
 }
 
+type JWTConfig struct {
+	SignKey string
+}
+
 var (
 	// MySQL 配置全局变量
 	MySQLCfg *MySQLConfig
 	// 项目启动配置全局变量
 	TxnBICfg *TxnBIConfig
+	// JWT 配置全局变量
+	JWTCfg *JWTConfig
 )

@@ -2,7 +2,6 @@ txnbi:
   host: "127.0.0.1"
   port: 8080
 
-
 mysql:
    user: "root"
    password: "123456aa"
@@ -13,3 +12,5 @@ mysql:
    location: "Local"
    parse_time: "True"
 
+jwt:
+  sign_key: "123456"
