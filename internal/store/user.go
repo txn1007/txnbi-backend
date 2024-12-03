@@ -1,6 +1,9 @@
 package store
 
-import "txnbi-backend/internal/model"
+import (
+	"errors"
+	"txnbi-backend/internal/model"
+)
 
 func GetUserByAccount(account string) (*model.User, error) {
 	var u model.User
@@ -9,4 +12,12 @@ func GetUserByAccount(account string) (*model.User, error) {
 		return nil, err
 	}
 	return &u, nil
+}
+
+func CreateUser(account string, password string, userRole string) error {
+	// 非法角色
+	if !(userRole == "admin" || userRole == "user") {
+		return errors.New("user role must be admin or user")
+	}
+	return DB.Create(&model.User{UserAccount: account, UserPassword: password, UserName: "Jack", UserRole: userRole}).Error
 }

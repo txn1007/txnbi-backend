@@ -21,3 +21,19 @@ func UserLogin(account string, password string) error {
 	// todo 生成并返回 token
 	return nil
 }
+
+func UserRegister(account string, password string) error {
+	ac, err := store.GetUserByAccount(account)
+	if ac != nil && err == nil {
+		return fmt.Errorf("account exist")
+	}
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		return err
+	}
+
+	err = store.CreateUser(account, password, "user")
+	if err != nil {
+		return err
+	}
+	return nil
+}

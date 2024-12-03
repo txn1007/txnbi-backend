@@ -8,6 +8,30 @@ info:
 paths:
   /user/login:
     post:
+      description: 登陆界面中的用户登陆接口
+      parameters:
+      - description: 用户账号
+        in: formData
+        name: account
+        required: true
+        type: string
+      - description: 用户密码
+        in: formData
+        name: password
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: 用户登陆接口
+      tags:
+      - user
+  /user/register:
+    post:
       description: 登陆界面中的用户注册接口
       parameters:
       - description: 用户账号
