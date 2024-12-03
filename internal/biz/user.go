@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"gorm.io/gorm"
 	"txnbi-backend/conf"
+	"txnbi-backend/internal/model"
 	"txnbi-backend/internal/store"
 	"txnbi-backend/pkg/jwt"
 	"txnbi-backend/tool/encry"
@@ -39,4 +40,8 @@ func UserRegister(account string, password string) error {
 		return err
 	}
 	return nil
+}
+
+func CurrentUserDetail(userID int64) (*model.User, error) {
+	return store.GetUserByID(userID)
 }

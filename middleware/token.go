@@ -9,7 +9,7 @@ import (
 
 func AuthUserToken() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		token, is := c.GetPostForm("token")
+		token, is := c.GetQuery("token")
 		if !is {
 			c.JSON(http.StatusUnauthorized, gin.H{"statusCode": 1, "message": "未登陆！"})
 			c.Abort()

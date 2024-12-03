@@ -59,3 +59,31 @@ func UserRegister(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, api.UserRegisterResp{StatusCode: 0, Message: "注册成功！"})
 }
+
+// CurrentUserDetail godoc
+//
+//	@Summary		用户自身详情接口
+//	@Description	用户自身详情接口
+//	@Tags			user
+//	@Produce		json
+//	@Param			Info	query		api.CurrentUserDetailReq	true "查询参数"
+//	@Success		200		{object}	api.CurrentUserDetailResp
+//	@Router			/user/CurrentUserDetail [get]
+func CurrentUserDetail(ctx *gin.Context) {
+	var req api.CurrentUserDetailReq
+	if err := ctx.ShouldBind(&req); err != nil {
+		ctx.JSON(http.StatusOK, api.UserRegisterResp{StatusCode: 1, Message: err.Error()})
+		return
+	}
+	user, err := biz.CurrentUserDetail(ctx.GetInt64("userID"))
+	if err != nil {
+		ctx.JSON(http.StatusOK, api.UserRegisterResp{StatusCode: 1, Message: err.Error()})
+		return
+	}
+	ctx.JSON(http.StatusOK, api.CurrentUserDetailResp{StatusCode: 0, Message: "登陆成功！", UserInfoV0: api.UserInfoV0{
+		ID: user.ID, UserAccount: user.UserAccount, UserName: user.UserName, UserAvatar: user.UserAvatar,
+		UserRole: user.UserRole, CreateTime: user.CreateTime, UpdateTime: user.UpdateTime,
+	},
+	})
+	return
+}

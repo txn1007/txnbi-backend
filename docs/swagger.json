@@ -9,6 +9,34 @@
     "host": "localhost:8080",
     "basePath": "/",
     "paths": {
+        "/user/CurrentUserDetail": {
+            "get": {
+                "description": "用户自身详情接口",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "用户自身详情接口",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "name": "token",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.CurrentUserDetailResp"
+                        }
+                    }
+                }
+            }
+        },
         "/user/login": {
             "post": {
                 "description": "登陆界面中的用户登陆接口",
@@ -73,6 +101,55 @@
         }
     },
     "definitions": {
+        "api.CurrentUserDetailResp": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "description": "required: true\nexample: 登陆成功",
+                    "type": "string"
+                },
+                "statusCode": {
+                    "description": "required: true\nexample: 0",
+                    "type": "integer"
+                },
+                "userInfoV0": {
+                    "$ref": "#/definitions/api.UserInfoV0"
+                }
+            }
+        },
+        "api.UserInfoV0": {
+            "type": "object",
+            "properties": {
+                "createTime": {
+                    "description": "创建时间",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "id",
+                    "type": "integer"
+                },
+                "updateTime": {
+                    "description": "更新时间",
+                    "type": "string"
+                },
+                "userAccount": {
+                    "description": "账号",
+                    "type": "string"
+                },
+                "userAvatar": {
+                    "description": "用户头像",
+                    "type": "string"
+                },
+                "userName": {
+                    "description": "用户昵称",
+                    "type": "string"
+                },
+                "userRole": {
+                    "description": "用户角色：user/admin",
+                    "type": "string"
+                }
+            }
+        },
         "api.UserLoginReq": {
             "type": "object",
             "required": [
