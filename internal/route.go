@@ -17,6 +17,8 @@ func Route() *gin.Engine {
 		userGroup.POST("/register", handle.UserRegister) //用户注册接口
 		userGroup.GET("/CurrentUserDetail", middleware.AuthUserToken(), handle.CurrentUserDetail)
 	}
+
+	routes.POST("/chart/gen", middleware.AuthUserToken(), handle.GenChart)
 	routes.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	return routes
 }

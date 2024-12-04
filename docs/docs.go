@@ -15,6 +15,63 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/chart/gen": {
+            "post": {
+                "description": "AI生成图表数据接口",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "chart"
+                ],
+                "summary": "AI生成图表数据接口",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "用户token",
+                        "name": "token",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "表名",
+                        "name": "chartName",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "表类型",
+                        "name": "chartType",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "查询目标",
+                        "name": "goal",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "用户上传的文件",
+                        "name": "chartData",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.GenChartResp"
+                        }
+                    }
+                }
+            }
+        },
         "/user/CurrentUserDetail": {
             "get": {
                 "description": "用户自身详情接口",
@@ -120,6 +177,23 @@ const docTemplate = `{
                 },
                 "userInfoV0": {
                     "$ref": "#/definitions/api.UserInfoV0"
+                }
+            }
+        },
+        "api.GenChartResp": {
+            "type": "object",
+            "properties": {
+                "genChart": {
+                    "type": "string"
+                },
+                "genResult": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "statusCode": {
+                    "type": "integer"
                 }
             }
         },

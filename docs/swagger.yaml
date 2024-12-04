@@ -15,6 +15,17 @@ definitions:
       userInfoV0:
         $ref: '#/definitions/api.UserInfoV0'
     type: object
+  api.GenChartResp:
+    properties:
+      genChart:
+        type: string
+      genResult:
+        type: string
+      message:
+        type: string
+      statusCode:
+        type: integer
+    type: object
   api.UserInfoV0:
     properties:
       createTime:
@@ -88,6 +99,45 @@ info:
   title: txnbi API
   version: "1.0"
 paths:
+  /chart/gen:
+    post:
+      description: AI生成图表数据接口
+      parameters:
+      - description: 用户token
+        in: formData
+        name: token
+        required: true
+        type: string
+      - description: 表名
+        in: formData
+        name: chartName
+        required: true
+        type: string
+      - description: 表类型
+        in: formData
+        name: chartType
+        required: true
+        type: string
+      - description: 查询目标
+        in: formData
+        name: goal
+        required: true
+        type: string
+      - description: 用户上传的文件
+        in: formData
+        name: chartData
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.GenChartResp'
+      summary: AI生成图表数据接口
+      tags:
+      - chart
   /user/CurrentUserDetail:
     get:
       description: 用户自身详情接口

@@ -1,6 +1,8 @@
 package api
 
-import "time"
+import (
+	"time"
+)
 
 type UserLoginReq struct {
 	Account  string `json:"account" form:"account" binding:"required"`
