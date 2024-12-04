@@ -20,10 +20,6 @@ type JWTConfig struct {
 	SignKey string
 }
 
-type OpenaiConfig struct {
-	AuthKey string
-}
-
 var (
 	// MySQL 配置全局变量
 	MySQLCfg *MySQLConfig
@@ -31,6 +27,4 @@ var (
 	TxnBICfg *TxnBIConfig
 	// JWT 配置全局变量
 	JWTCfg *JWTConfig
-	// Openai 配置全局变量
-	OpenaiCfg *OpenaiConfig
 )

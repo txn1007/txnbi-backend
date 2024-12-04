@@ -18,8 +18,6 @@ func init() {
 	GetMySQLConfig()
 	// 初始化 JWT
 	GetJWTConfig()
-	// 初始化 Openai
-	GetOpenaiConfig()
 }
 
 func GetMySQLConfig() {
@@ -43,9 +41,4 @@ func GetTxnBIConfig() {
 func GetJWTConfig() {
 	JWTCfg = new(JWTConfig)
 	JWTCfg.SignKey = viper.GetString("jwt.sign_key")
-}
-
-func GetOpenaiConfig() {
-	OpenaiCfg = new(OpenaiConfig)
-	OpenaiCfg.AuthKey = viper.GetString("openai.authKey")
 }
