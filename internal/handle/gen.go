@@ -26,7 +26,13 @@ func GenChart(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, api.GenChartResp{StatusCode: 1, Message: err.Error()})
 		return
 	}
-	data, analysis, err := biz.GenChart(req.ChartName, req.ChartType, req.Goal, req.ChartData, ctx.GetInt64("userID"))
+	// 检查文件大小是否超过 16MB 大小限制
+	if req.File.Size > 16*1024*1024 {
+		ctx.JSON(http.StatusOK, api.GenChartResp{StatusCode: 1, Message: "file size too big"})
+		return
+	}
+
+	data, analysis, err := biz.GenChart(req.ChartName, req.ChartType, req.Goal, req.File, ctx.GetInt64("userID"))
 	if err != nil {
 		ctx.JSON(http.StatusOK, api.GenChartResp{StatusCode: 1, Message: err.Error()})
 		return

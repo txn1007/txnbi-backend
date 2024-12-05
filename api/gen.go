@@ -3,12 +3,12 @@ package api
 import "mime/multipart"
 
 type GenChartReq struct {
-	Token string `json:"token" query:"token" form:"token"`
+	Token string `json:"token" query:"token" form:"token" binding:"required"`
 
-	ChartName string                `json:"chartName" form:"chartName"`
-	ChartType string                `json:"chartType" form:"chartType"`
-	Goal      string                `json:"goal" form:"goal"`
-	ChartData *multipart.FileHeader `json:"chartData" form:"chartData"`
+	ChartName string                `json:"chartName" form:"chartName" binding:"required"`
+	ChartType string                `json:"chartType" form:"chartType" binding:"required"`
+	Goal      string                `json:"goal" form:"goal" binding:"required"`
+	File      *multipart.FileHeader `json:"file" form:"file" binding:"required"`
 }
 
 type GenChartResp struct {
