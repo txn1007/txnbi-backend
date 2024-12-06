@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/xuri/excelize/v2"
 	"mime/multipart"
+	"txnbi-backend/api"
 	"txnbi-backend/internal/store"
 	"txnbi-backend/pkg/doubao"
 )
@@ -53,4 +54,25 @@ func GenChart(chartName, chartType, goal string, data *multipart.FileHeader, use
 	}
 
 	return chartData, analysis, nil
+}
+
+func ListMyChart(userID int64, chartName string, currentPage int, pageSize int) ([]api.ChartInfoV0, int64, error) {
+	// 查询数据库
+	charts, total, err := store.FindChartAndPage(userID, chartName, currentPage, pageSize)
+	if err != nil {
+		return nil, 0, err
+	}
+	// 转化
+	apiCharts := make([]api.ChartInfoV0, len(charts))
+	for i, chart := range charts {
+		apiCharts[i] = api.ChartInfoV0{
+			ChartID:     chart.ID,
+			ChartType:   chart.ChartType,
+			ChartGoal:   chart.Goal,
+			ChartName:   chart.Name,
+			ChartCode:   chart.GenChart,
+			ChartResult: chart.GenResult,
+		}
+	}
+	return apiCharts, total, nil
 }

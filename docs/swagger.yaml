@@ -1,5 +1,20 @@
 basePath: /
 definitions:
+  api.ChartInfoV0:
+    properties:
+      chartCode:
+        type: string
+      chartGoal:
+        type: string
+      chartID:
+        type: integer
+      chartName:
+        type: string
+      chartResult:
+        type: string
+      chartType:
+        type: string
+    type: object
   api.CurrentUserDetailResp:
     properties:
       message:
@@ -14,6 +29,19 @@ definitions:
         type: integer
       userInfoV0:
         $ref: '#/definitions/api.UserInfoV0'
+    type: object
+  api.FindMyChartResp:
+    properties:
+      charts:
+        items:
+          $ref: '#/definitions/api.ChartInfoV0'
+        type: array
+      message:
+        type: string
+      statusCode:
+        type: integer
+      total:
+        type: integer
     type: object
   api.GenChartResp:
     properties:
@@ -99,6 +127,33 @@ info:
   title: txnbi API
   version: "1.0"
 paths:
+  /chart/findMyChart:
+    get:
+      description: 用户获取自己的图表数据接口
+      parameters:
+      - in: query
+        name: chartName
+        type: string
+      - in: query
+        name: currentPage
+        type: integer
+      - in: query
+        name: pageSize
+        type: integer
+      - in: query
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.FindMyChartResp'
+      summary: 用户获取自己的图表数据接口
+      tags:
+      - chart
   /chart/gen:
     post:
       description: AI生成图表数据接口

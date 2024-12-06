@@ -15,6 +15,49 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/chart/findMyChart": {
+            "get": {
+                "description": "用户获取自己的图表数据接口",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "chart"
+                ],
+                "summary": "用户获取自己的图表数据接口",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "name": "chartName",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "currentPage",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "token",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.FindMyChartResp"
+                        }
+                    }
+                }
+            }
+        },
         "/chart/gen": {
             "post": {
                 "description": "AI生成图表数据接口",
@@ -164,6 +207,29 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "api.ChartInfoV0": {
+            "type": "object",
+            "properties": {
+                "chartCode": {
+                    "type": "string"
+                },
+                "chartGoal": {
+                    "type": "string"
+                },
+                "chartID": {
+                    "type": "integer"
+                },
+                "chartName": {
+                    "type": "string"
+                },
+                "chartResult": {
+                    "type": "string"
+                },
+                "chartType": {
+                    "type": "string"
+                }
+            }
+        },
         "api.CurrentUserDetailResp": {
             "type": "object",
             "properties": {
@@ -177,6 +243,26 @@ const docTemplate = `{
                 },
                 "userInfoV0": {
                     "$ref": "#/definitions/api.UserInfoV0"
+                }
+            }
+        },
+        "api.FindMyChartResp": {
+            "type": "object",
+            "properties": {
+                "charts": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/api.ChartInfoV0"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "statusCode": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
                 }
             }
         },

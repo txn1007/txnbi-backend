@@ -40,3 +40,33 @@ func GenChart(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, api.GenChartResp{StatusCode: 0, Message: "生成成功！", GenChart: data, GenResult: analysis})
 	return
 }
+
+// FindMyChart godoc
+//
+//	@Summary		用户获取自己的图表数据接口
+//	@Description	用户获取自己的图表数据接口
+//	@Tags			chart
+//	@Produce		json
+//	@Param			Info	query		api.FindMyChartReq	true	"查询信息"
+//	@Success		200		{object}	api.FindMyChartResp
+//	@Router			/chart/findMyChart [get]
+func FindMyChart(ctx *gin.Context) {
+	var req api.FindMyChartReq
+	if err := ctx.ShouldBindQuery(&req); err != nil {
+		ctx.JSON(http.StatusOK, api.FindMyChartResp{StatusCode: 1, Message: err.Error()})
+		return
+	}
+	// 校验参数
+	if req.PageSize < 1 || req.PageSize > 32 {
+		ctx.JSON(http.StatusOK, api.FindMyChartResp{StatusCode: 1, Message: "pageSize不合法"})
+		return
+	}
+
+	chart, total, err := biz.ListMyChart(ctx.GetInt64("userID"), req.ChartName, req.CurrentPage, req.PageSize)
+	if err != nil {
+		ctx.JSON(http.StatusOK, api.FindMyChartResp{StatusCode: 1, Message: err.Error()})
+		return
+	}
+	ctx.JSON(http.StatusOK, api.FindMyChartResp{StatusCode: 0, Message: "查询成功！", Charts: chart, Total: total})
+	return
+}
