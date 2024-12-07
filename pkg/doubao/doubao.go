@@ -8,6 +8,7 @@ import (
 	"github.com/volcengine/volcengine-go-sdk/volcengine"
 	"os"
 	"strings"
+	"unicode"
 )
 
 var cli *arkruntime.Client
@@ -53,5 +54,22 @@ func GenChart(dest string, data string, chartType string) (chartData string, ana
 	if len(spl) < 3 {
 		return "", "", fmt.Errorf("生成的字符串不合法")
 	}
-	return spl[1], spl[2], nil
+
+	// 对字符串切分结果进行分析
+	for _, v := range spl {
+		// 去除换行
+		t := strings.Trim(v, "\n")
+		if len(t) < 1 {
+			continue
+		}
+		if t[0] == '{' {
+			chartData = t
+		}
+		// 第一个字符为汉字或英文字母
+		if unicode.Is(unicode.Han, []rune(t)[0]) || unicode.IsLetter([]rune(t)[0]) {
+			analysis = t
+		}
+	}
+
+	return chartData, analysis, nil
 }
