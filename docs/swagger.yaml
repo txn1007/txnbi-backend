@@ -156,6 +156,8 @@ paths:
       - chart
   /chart/gen:
     post:
+      consumes:
+      - multipart/form-data
       description: AI生成图表数据接口
       parameters:
       - description: 用户token
@@ -180,7 +182,7 @@ paths:
         type: string
       - description: 用户上传的文件
         in: formData
-        name: chartData
+        name: file
         required: true
         type: file
       produces:

@@ -61,6 +61,9 @@ const docTemplate = `{
         "/chart/gen": {
             "post": {
                 "description": "AI生成图表数据接口",
+                "consumes": [
+                    "multipart/form-data"
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -100,7 +103,7 @@ const docTemplate = `{
                     {
                         "type": "file",
                         "description": "用户上传的文件",
-                        "name": "chartData",
+                        "name": "file",
                         "in": "formData",
                         "required": true
                     }
