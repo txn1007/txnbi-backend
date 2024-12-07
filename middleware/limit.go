@@ -37,7 +37,6 @@ func init() {
 func Limiter() gin.HandlerFunc {
 	mid := stdlibMiddleware.NewMiddleware(limit, stdlibMiddleware.WithKeyGetter(func(c *gin.Context) string {
 		userID := c.GetInt64("userID")
-		fmt.Println()
 		if userID == 0 {
 			return c.ClientIP()
 		}

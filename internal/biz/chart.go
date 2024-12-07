@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/xuri/excelize/v2"
 	"mime/multipart"
+	"time"
 	"txnbi-backend/api"
 	"txnbi-backend/internal/store"
 	"txnbi-backend/pkg/doubao"
@@ -26,7 +27,6 @@ func GenChart(chartName, chartType, goal string, data *multipart.FileHeader, use
 	if err != nil {
 		return "", "", err
 	}
-
 	// 写入 CSV
 	var buf bytes.Buffer
 	writer := csv.NewWriter(&buf)
@@ -41,6 +41,13 @@ func GenChart(chartName, chartType, goal string, data *multipart.FileHeader, use
 	}
 	csvStr := buf.String()
 
+	chartID := time.Now().Unix()
+	// 生成用户生成的图表，其数据库表结构
+	DBChartName, err := store.CreateUserGenChart(chartID, rows)
+	if err != nil {
+		return "", "", err
+	}
+
 	// AI生成数据
 	chartData, analysis, err = doubao.GenChart(goal, csvStr, chartType)
 	if err != nil {
@@ -48,7 +55,7 @@ func GenChart(chartName, chartType, goal string, data *multipart.FileHeader, use
 	}
 
 	// 存入数据库
-	err = store.CreateChart(chartName, goal, csvStr, chartData, analysis, chartType, userID)
+	err = store.CreateChart(chartName, DBChartName, goal, chartData, analysis, chartType, userID)
 	if err != nil {
 		return "", "", err
 	}

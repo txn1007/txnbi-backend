@@ -53,6 +53,5 @@ func GenChart(dest string, data string, chartType string) (chartData string, ana
 	if len(spl) < 3 {
 		return "", "", fmt.Errorf("生成的字符串不合法")
 	}
-
 	return spl[1], spl[2], nil
 }
