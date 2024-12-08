@@ -8,6 +8,7 @@ import (
 	"txnbi-backend/internal/model"
 	"txnbi-backend/internal/store"
 	"txnbi-backend/pkg/jwt"
+	"txnbi-backend/pkg/myRedis"
 	"txnbi-backend/tool/encry"
 )
 
@@ -22,7 +23,10 @@ func UserLogin(account string, password string) (token string, err error) {
 	if ac.UserPassword != encry.EncodeByMd5(password) {
 		return "", fmt.Errorf("password error")
 	}
-	return jwt.SignForUser(ac.ID, ac.UserAccount, conf.JWTCfg.SignKey), nil
+	// 将token记录到redis中，标记为最新的token
+	token = jwt.SignForUser(ac.ID, ac.UserAccount, conf.JWTCfg.SignKey)
+	myRedis.SetUserToken(ac.ID, token)
+	return token, nil
 }
 
 func UserRegister(account string, password string) error {

@@ -5,11 +5,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/redis/go-redis/v9"
 	"github.com/ulule/limiter/v3"
-	"log"
-	"time"
-
 	stdlibMiddleware "github.com/ulule/limiter/v3/drivers/middleware/gin"
 	redis2 "github.com/ulule/limiter/v3/drivers/store/redis"
+	"log"
+	"time"
+	"txnbi-backend/conf"
 )
 
 var limit *limiter.Limiter
@@ -20,11 +20,19 @@ func init() {
 		Limit:  20,
 	}
 
+	//rdb := redis.NewClient(&redis.Options{
+	//	Addr:     "localhost:6379",
+	//	Password: "", // no password set
+	//	DB:       3,  // use default DB
+	//})
+
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
-		Password: "", // no password set
-		DB:       3,  // use default DB
+		Addr:     fmt.Sprintf("%s:%d", conf.LimiterRedisCfg.Host, conf.LimiterRedisCfg.Port),
+		Password: conf.LimiterRedisCfg.Password,
+		DB:       conf.LimiterRedisCfg.DB,
 	})
+
+	fmt.Println(rdb)
 
 	store, err := redis2.NewStore(rdb)
 	if err != nil {
