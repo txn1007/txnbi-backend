@@ -52,24 +52,24 @@ func FindChartAndPage(userID int64, chartName string, currentPage, pageSize int)
 
 	// 查询所有记录
 	charts = make([]model.Chart, 0, pageSize)
-	if chartName == "" {
-		err = DB.Offset(offset).Limit(pageSize).Select("id", "chartType", "name", "goal", "genChart", "genResult").Where("userId = ?", userID).Find(&charts).Error
-		if err != nil {
-			return nil, 0, err
-		}
-		err = DB.Model(&model.Chart{}).Select("id", "chartType", "name", "goal", "genChart", "genResult").Where("userId = ?", userID).Count(&total).Error
-		if err != nil {
-			return nil, 0, err
-		}
+	// 根据是否为查询构建 SQL的where语句
+	var whereSQL string
+	if chartName != "" {
+		whereSQL = fmt.Sprintf("name = '%s' AND userId = %d", chartName, userID)
 	} else {
-		err = DB.Offset(offset).Limit(pageSize).Where("userId = ? AND name = ?", userID, chartName).Find(&charts).Error
-		if err != nil {
-			return nil, 0, err
-		}
-		err = DB.Model(&model.Chart{}).Where("userId = ? AND name = ?", userID, chartName).Count(&total).Error
-		if err != nil {
-			return nil, 0, err
-		}
+		whereSQL = fmt.Sprintf("userId = %d", userID)
+	}
+
+	// 查询记录与总数
+	err = DB.Offset(offset).Limit(pageSize).
+		Select("id", "chartType", "name", "goal", "genChart", "genResult").
+		Where(whereSQL).Order("updateTime desc").Find(&charts).Error
+	if err != nil {
+		return nil, 0, err
+	}
+	err = DB.Model(&model.Chart{}).Where(whereSQL).Count(&total).Error
+	if err != nil {
+		return nil, 0, err
 	}
 
 	return charts, total, nil
