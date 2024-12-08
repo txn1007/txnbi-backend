@@ -80,10 +80,30 @@ func CurrentUserDetail(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, api.UserRegisterResp{StatusCode: 1, Message: err.Error()})
 		return
 	}
-	ctx.JSON(http.StatusOK, api.CurrentUserDetailResp{StatusCode: 0, Message: "登陆成功！", UserInfoV0: api.UserInfoV0{
+	ctx.JSON(http.StatusOK, api.CurrentUserDetailResp{StatusCode: 0, Message: "获取用户本人信息成功！", UserInfoV0: api.UserInfoV0{
 		ID: user.ID, UserAccount: user.UserAccount, UserName: user.UserName, UserAvatar: user.UserAvatar,
 		UserRole: user.UserRole, CreateTime: user.CreateTime, UpdateTime: user.UpdateTime,
 	},
 	})
+	return
+}
+
+// UserLoginOut godoc
+//
+//	@Summary		用户退出登陆接口
+//	@Description	用户自身详情接口
+//	@Tags			user
+//	@Produce		json
+//	@Param			Info	query		api.UserLoginOutReq	true "参数"
+//	@Success		200		{object}	api.UserLoginOutResp
+//	@Router			/user/loginOut [post]
+func UserLoginOut(ctx *gin.Context) {
+	userID := ctx.GetInt64("userID")
+	err := biz.UserLoginOut(userID)
+	if err != nil {
+		ctx.JSON(http.StatusOK, api.UserLoginOutResp{StatusCode: 1, Message: err.Error()})
+		return
+	}
+	ctx.JSON(http.StatusOK, api.UserLoginOutResp{StatusCode: 0, Message: "退出登陆成功！"})
 	return
 }

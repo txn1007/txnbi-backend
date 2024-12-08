@@ -177,6 +177,34 @@ const docTemplate = `{
                 }
             }
         },
+        "/user/loginOut": {
+            "post": {
+                "description": "用户自身详情接口",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "用户退出登陆接口",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "name": "token",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.UserLoginOutResp"
+                        }
+                    }
+                }
+            }
+        },
         "/user/register": {
             "post": {
                 "description": "登陆界面中的用户注册接口",
@@ -237,11 +265,11 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "message": {
-                    "description": "required: true\nexample: 登陆成功",
+                    "description": "required: true",
                     "type": "string"
                 },
                 "statusCode": {
-                    "description": "required: true\nexample: 0",
+                    "description": "required: true",
                     "type": "integer"
                 },
                 "userInfoV0": {
@@ -319,6 +347,19 @@ const docTemplate = `{
                 }
             }
         },
+        "api.UserLoginOutResp": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "description": "required: true",
+                    "type": "string"
+                },
+                "statusCode": {
+                    "description": "required: true",
+                    "type": "integer"
+                }
+            }
+        },
         "api.UserLoginReq": {
             "type": "object",
             "required": [
@@ -367,11 +408,11 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "message": {
-                    "description": "required: true\nexample: 登陆成功",
+                    "description": "required: true",
                     "type": "string"
                 },
                 "statusCode": {
-                    "description": "required: true\nexample: 0",
+                    "description": "required: true",
                     "type": "integer"
                 }
             }

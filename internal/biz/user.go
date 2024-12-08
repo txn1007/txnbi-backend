@@ -49,3 +49,8 @@ func UserRegister(account string, password string) error {
 func CurrentUserDetail(userID int64) (*model.User, error) {
 	return store.GetUserByID(userID)
 }
+
+func UserLoginOut(userID int64) error {
+	myRedis.DeleteUserToken(userID)
+	return nil
+}

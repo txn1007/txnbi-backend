@@ -22,10 +22,8 @@ type UserRegisterReq struct {
 
 type UserRegisterResp struct {
 	// required: true
-	// example: 0
 	StatusCode int `json:"statusCode" form:"statusCode"`
 	// required: true
-	// example: 登陆成功
 	Message string `json:"message" form:"message"`
 }
 
@@ -35,10 +33,8 @@ type CurrentUserDetailReq struct {
 
 type CurrentUserDetailResp struct {
 	// required: true
-	// example: 0
 	StatusCode int `json:"statusCode" form:"statusCode"`
 	// required: true
-	// example: 登陆成功
 	Message string `json:"message" form:"message"`
 
 	UserInfoV0 UserInfoV0 `json:"userInfoV0" form:"userInfoV0"`
@@ -52,4 +48,15 @@ type UserInfoV0 struct {
 	UserRole    string    `json:"userRole"`    // 用户角色：user/admin
 	CreateTime  time.Time `json:"createTime"`  // 创建时间
 	UpdateTime  time.Time `json:"updateTime"`  // 更新时间
+}
+
+type UserLoginOutReq struct {
+	Token string `json:"token" form:"token" binding:"required"`
+}
+
+type UserLoginOutResp struct {
+	// required: true
+	StatusCode int `json:"statusCode" form:"statusCode"`
+	// required: true
+	Message string `json:"message" form:"message"`
 }

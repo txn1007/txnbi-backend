@@ -14,3 +14,15 @@ mysql:
 
 jwt:
   sign_key: "123456"
+
+redis:
+  host: "localhost"
+  port: 6379
+  password: ""
+  DB: 0
+
+limiterRedis:
+  host: "localhost"
+  port: 6379
+  password: ""
+  DB: 3

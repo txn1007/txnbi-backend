@@ -16,6 +16,7 @@ func Route() *gin.Engine {
 		userGroup.POST("/login", handle.UserLogin)       // 用户登陆接口
 		userGroup.POST("/register", handle.UserRegister) //用户注册接口
 		userGroup.GET("/CurrentUserDetail", middleware.AuthUserToken(), handle.CurrentUserDetail)
+		userGroup.POST("/loginOut", middleware.AuthUserToken(), handle.UserLoginOut)
 	}
 	chartGroup := routes.Group("/chart", middleware.AuthUserToken())
 	{
