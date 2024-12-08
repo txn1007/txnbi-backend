@@ -2,6 +2,8 @@ package store
 
 import (
 	"errors"
+	"fmt"
+	"time"
 	"txnbi-backend/internal/model"
 )
 
@@ -28,5 +30,6 @@ func CreateUser(account string, password string, userRole string) error {
 	if !(userRole == "admin" || userRole == "user") {
 		return errors.New("user role must be admin or user")
 	}
-	return DB.Create(&model.User{UserAccount: account, UserPassword: password, UserName: "Jack", UserRole: userRole}).Error
+	randomUserName := fmt.Sprintf("user_%d", time.Now().Unix()%1000000)
+	return DB.Create(&model.User{UserAccount: account, UserPassword: password, UserName: randomUserName, UserRole: userRole, UserAvatar: "https://tiktokk-1331222828.cos.ap-guangzhou.myqcloud.com/avatar/avatar-tem.jpg"}).Error
 }
