@@ -393,10 +393,14 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "account",
+                "inviteCode",
                 "password"
             ],
             "properties": {
                 "account": {
+                    "type": "string"
+                },
+                "inviteCode": {
                     "type": "string"
                 },
                 "password": {

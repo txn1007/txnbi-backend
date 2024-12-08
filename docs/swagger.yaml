@@ -106,10 +106,13 @@ definitions:
     properties:
       account:
         type: string
+      inviteCode:
+        type: string
       password:
         type: string
     required:
     - account
+    - inviteCode
     - password
     type: object
   api.UserRegisterResp:

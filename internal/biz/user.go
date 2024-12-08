@@ -29,7 +29,15 @@ func UserLogin(account string, password string) (token string, err error) {
 	return token, nil
 }
 
-func UserRegister(account string, password string) error {
+func UserRegister(account, password, inviteCode string) error {
+	// 检查邀请码是否存在
+	is, err := myRedis.IsInviteCode(inviteCode)
+	if !is {
+		return fmt.Errorf("邀请码不存在！")
+	}
+	if err != nil {
+		return err
+	}
 	ac, err := store.GetUserByAccount(account)
 	if ac != nil && err == nil {
 		return fmt.Errorf("account exist")

@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"txnbi-backend/conf"
 	"txnbi-backend/pkg/jwt"
+	"txnbi-backend/pkg/myRedis"
 )
 
 func AuthUserToken() gin.HandlerFunc {
@@ -22,7 +23,18 @@ func AuthUserToken() gin.HandlerFunc {
 		}
 		id, userAccount, err := jwt.ParseUserToken(token, conf.JWTCfg.SignKey)
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"statusCode": 1, "message": err.Error()})
+			c.JSON(http.StatusUnauthorized, gin.H{"statusCode": 1, "message": "用户未登陆！"})
+			c.Abort()
+			return
+		}
+		redisToken, err := myRedis.GetUserToken(id)
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"statusCode": 1, "message": "用户未登陆！"})
+			c.Abort()
+			return
+		}
+		if redisToken == "" || redisToken != token {
+			c.JSON(http.StatusUnauthorized, gin.H{"statusCode": 1, "message": "用户未登陆！"})
 			c.Abort()
 			return
 		}
