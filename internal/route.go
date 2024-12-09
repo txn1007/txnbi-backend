@@ -22,6 +22,7 @@ func Route() *gin.Engine {
 	{
 		//chartGroup.Use(middleware.Limiter()).POST("/gen", handle.GenChart)
 		chartGroup.POST("/gen", handle.GenChart)
+		chartGroup.POST("/myChartDel", handle.DeleteMyChart)
 		chartGroup.GET("/findMyChart", handle.FindMyChart)
 	}
 

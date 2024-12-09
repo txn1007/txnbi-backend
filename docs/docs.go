@@ -118,6 +118,40 @@ const docTemplate = `{
                 }
             }
         },
+        "/chart/myChartDel": {
+            "post": {
+                "description": "删除图表数据接口",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "chart"
+                ],
+                "summary": "删除图表数据接口",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "name": "chartID",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "name": "token",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.DeleteMyChartResp"
+                        }
+                    }
+                }
+            }
+        },
         "/user/CurrentUserDetail": {
             "get": {
                 "description": "用户自身详情接口",
@@ -277,6 +311,17 @@ const docTemplate = `{
                 },
                 "userInfoV0": {
                     "$ref": "#/definitions/api.UserInfoV0"
+                }
+            }
+        },
+        "api.DeleteMyChartResp": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "statusCode": {
+                    "type": "integer"
                 }
             }
         },

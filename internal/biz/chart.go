@@ -3,8 +3,10 @@ package biz
 import (
 	"bytes"
 	"encoding/csv"
+	"errors"
 	"fmt"
 	"github.com/xuri/excelize/v2"
+	"gorm.io/gorm"
 	"mime/multipart"
 	"time"
 	"txnbi-backend/api"
@@ -83,4 +85,17 @@ func ListMyChart(userID int64, chartName string, currentPage int, pageSize int) 
 		}
 	}
 	return apiCharts, total, nil
+}
+
+func DeleteMyChart(chartID, userID int64) error {
+	// 获取图表信息
+	chart, err := store.GetChartByID(chartID)
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return fmt.Errorf("图表不存在！")
+	}
+	// 检查是否为请求发起者创建的图表
+	if chart.UserID != userID {
+		return fmt.Errorf("该图表并非由您创建！")
+	}
+	return store.DeleteChartByID(chartID)
 }

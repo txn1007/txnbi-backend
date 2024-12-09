@@ -45,3 +45,14 @@ type ChartInfoV0 struct {
 
 	UpdateTime string `json:"updateTime" form:"updateTime"`
 }
+
+type DeleteMyChartReq struct {
+	Token string `json:"token" query:"token" form:"token" binding:"required"`
+
+	ChartID int64 `json:"chartID" form:"chartID" binding:"required"`
+}
+
+type DeleteMyChartResp struct {
+	StatusCode int    `json:"statusCode" form:"statusCode"`
+	Message    string `json:"message" form:"message"`
+}

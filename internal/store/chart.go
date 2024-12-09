@@ -86,9 +86,9 @@ func FindChartAndPage(userID int64, chartName string, currentPage, pageSize int)
 	// 根据是否为查询构建 SQL的where语句
 	var whereSQL string
 	if chartName != "" {
-		whereSQL = fmt.Sprintf("name = '%s' AND userId = %d", chartName, userID)
+		whereSQL = fmt.Sprintf("name = '%s' AND userId = %d AND isDelete = 0", chartName, userID)
 	} else {
-		whereSQL = fmt.Sprintf("userId = %d", userID)
+		whereSQL = fmt.Sprintf("userId = %d AND isDelete = 0", userID)
 	}
 
 	// 查询记录与总数
@@ -104,4 +104,18 @@ func FindChartAndPage(userID int64, chartName string, currentPage, pageSize int)
 	}
 
 	return charts, total, nil
+}
+
+// DeleteChart 软删除
+func DeleteChartByID(chartID int64) error {
+	return DB.Model(&model.Chart{}).Where("id = ?", chartID).Update("isDelete", 1).Error
+}
+
+func GetChartByID(chartID int64) (*model.Chart, error) {
+	var chart model.Chart
+	err := DB.Where("id = ? AND isDelete = 0", chartID).First(&chart).Error
+	if err != nil {
+		return nil, err
+	}
+	return &chart, nil
 }

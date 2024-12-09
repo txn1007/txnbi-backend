@@ -99,3 +99,28 @@ func FindMyChart(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, api.FindMyChartResp{StatusCode: 0, Message: "查询成功！", Charts: chart, Total: total})
 	return
 }
+
+// DeleteMyChart godoc
+//
+//	@Summary		删除图表数据接口
+//	@Description	删除图表数据接口
+//	@Tags			chart
+//	@Produce		json
+//	@Param			Info	formData	api.DeleteMyChartReq	true	"查询信息"
+//	@Success		200		{object}	api.DeleteMyChartResp
+//	@Router			/chart/myChartDel [post]
+func DeleteMyChart(ctx *gin.Context) {
+	var req api.DeleteMyChartReq
+	if err := ctx.ShouldBind(&req); err != nil {
+		ctx.JSON(http.StatusOK, api.DeleteMyChartResp{StatusCode: 1, Message: err.Error()})
+		return
+	}
+	userID := ctx.GetInt64("userID")
+	err := biz.DeleteMyChart(req.ChartID, userID)
+	if err != nil {
+		ctx.JSON(http.StatusOK, api.DeleteMyChartResp{StatusCode: 1, Message: err.Error()})
+		return
+	}
+	ctx.JSON(http.StatusOK, api.DeleteMyChartResp{StatusCode: 0, Message: "删除成功！"})
+	return
+}

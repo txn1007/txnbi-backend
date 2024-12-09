@@ -28,6 +28,13 @@ definitions:
       userInfoV0:
         $ref: '#/definitions/api.UserInfoV0'
     type: object
+  api.DeleteMyChartResp:
+    properties:
+      message:
+        type: string
+      statusCode:
+        type: integer
+    type: object
   api.FindMyChartResp:
     properties:
       charts:
@@ -199,6 +206,28 @@ paths:
           schema:
             $ref: '#/definitions/api.GenChartResp'
       summary: AI生成图表数据接口
+      tags:
+      - chart
+  /chart/myChartDel:
+    post:
+      description: 删除图表数据接口
+      parameters:
+      - in: formData
+        name: chartID
+        required: true
+        type: integer
+      - in: formData
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.DeleteMyChartResp'
+      summary: 删除图表数据接口
       tags:
       - chart
   /user/CurrentUserDetail:
