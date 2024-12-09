@@ -62,7 +62,7 @@ func FindChartAndPage(userID int64, chartName string, currentPage, pageSize int)
 
 	// 查询记录与总数
 	err = DB.Offset(offset).Limit(pageSize).
-		Select("id", "chartType", "name", "goal", "genChart", "genResult").
+		Select("id", "chartType", "name", "goal", "genChart", "genResult", "updateTime").
 		Where(whereSQL).Order("updateTime desc").Find(&charts).Error
 	if err != nil {
 		return nil, 0, err

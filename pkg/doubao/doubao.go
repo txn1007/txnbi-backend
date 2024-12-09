@@ -30,7 +30,8 @@ func GenChart(dest string, data string, chartType string) (chartData string, ana
 						"\n分析需求：\n{数据分析的需求或者目标}\n"+
 						"原始数据：\n{csv格式的原始数据，用,作为分隔符}\n"+
 						"请根据这两部分内容，按照以下指定格式生成内容（此外不要输出任何多余的开头、结尾、注释）\n"+
-						"【【【【【\n{前端 Echarts V5 %s 的 option 配置对象json代码，合理地将数据进行可视化，不要生成任何多余的内容，比如注释}\n"+
+						"【【【【【\n{前端 Echarts V5 %s 的 option 配置对象json代码，合理地将数据进行可视化，用户可以选中特定字段进行查看，"+
+						"不要生成任何多余的内容，比如注释、图表名。必须包含配置项legend,grid,xAxis,yAxis}\n"+
 						"【【【【【\n{明确的数据分析结论、越详细越好，结论不大于200字}", chartType)),
 				},
 			},

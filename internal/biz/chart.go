@@ -79,6 +79,7 @@ func ListMyChart(userID int64, chartName string, currentPage int, pageSize int) 
 			ChartName:   chart.Name,
 			ChartCode:   chart.GenChart,
 			ChartResult: chart.GenResult,
+			UpdateTime:  chart.UpdateTime.Format("2006-01-02 15:04:05"),
 		}
 	}
 	return apiCharts, total, nil

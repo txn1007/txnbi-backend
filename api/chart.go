@@ -42,4 +42,6 @@ type ChartInfoV0 struct {
 	ChartType   string `json:"chartType" form:"chartType"`
 	ChartCode   string `json:"chartCode" form:"chartCode"`
 	ChartResult string `json:"chartResult" form:"chartResult"`
+
+	UpdateTime string `json:"updateTime" form:"updateTime"`
 }

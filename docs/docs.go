@@ -258,6 +258,9 @@ const docTemplate = `{
                 },
                 "chartType": {
                     "type": "string"
+                },
+                "updateTime": {
+                    "type": "string"
                 }
             }
         },
