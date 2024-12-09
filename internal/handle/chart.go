@@ -1,9 +1,11 @@
 package handle
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"path/filepath"
+	"slices"
 	"txnbi-backend/api"
 	"txnbi-backend/internal/biz"
 )
@@ -38,6 +40,24 @@ func GenChart(ctx *gin.Context) {
 	ext := filepath.Ext(req.File.Filename)
 	if ext != ".xlsx" && ext != ".xls" && ext != ".csv" {
 		ctx.JSON(http.StatusOK, api.GenChartResp{StatusCode: 1, Message: "file type not supported"})
+		return
+	}
+
+	// 检查用户表名、表类型、分析目标的值长度是否在合法范围内
+	// 有 gorm 已经有参数化查询，所以在这就不针对 SQL注入 做检查
+	goalLen, chartNameLen := len(req.Goal), len(req.ChartName)
+	if goalLen < 2 || goalLen > 255 {
+		ctx.JSON(http.StatusOK, api.GenChartResp{StatusCode: 1, Message: "分析目标的字符数应在 2 ~ 255间！"})
+		return
+	}
+	if chartNameLen < 1 || chartNameLen > 127 {
+		ctx.JSON(http.StatusOK, api.GenChartResp{StatusCode: 1, Message: "表名的字符数应在 2 ~ 128 间！"})
+		return
+	}
+
+	allChartSupportType := []string{"折线图", "柱状图", "堆叠图", "饼图", "雷达图"}
+	if !slices.Contains(allChartSupportType, req.ChartType) {
+		ctx.JSON(http.StatusOK, api.GenChartResp{StatusCode: 1, Message: fmt.Sprintf("不支持该图表类型！")})
 		return
 	}
 

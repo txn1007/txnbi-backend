@@ -2,6 +2,7 @@ package store
 
 import (
 	"fmt"
+	"regexp"
 	"strings"
 	"txnbi-backend/internal/model"
 )
@@ -12,32 +13,62 @@ func CreateChart(chartName, chartTableName, goal, genChart, genResult, chartType
 }
 
 func CreateUserGenChart(chartID int64, excelRow [][]string) (DBTableName string, err error) {
-	// 构建建表语句并执行
 	// 定义表名
 	tableName := fmt.Sprintf("userGenChart_%d", chartID)
+
+	// 1.生成表
 	// 构造建表语句的字段SQL部分
 	var columns []string
 	fields := excelRow[0]
 	for _, field := range fields {
-		column := fmt.Sprintf("`%s` VARCHAR(256) NOT NULL", field)
-		columns = append(columns, column)
+		// 检查字段名是否合法
+		// 字段名只允许汉字、英文、数字、下划线
+		matched, err := regexp.MatchString(`^[\p{Han}_a-zA-Z0-9]+$`, field)
+		if err != nil {
+			return "", err
+		}
+		if !matched {
+			return "", fmt.Errorf("字段命名非法")
+		}
+
+		columns = append(columns, fmt.Sprintf("`%s` VARCHAR(256) NOT NULL", field))
 	}
 	createStmt := fmt.Sprintf("CREATE TABLE IF NOT EXISTS `%s` (%s) collate = utf8mb4_unicode_ci;", tableName, strings.Join(columns, ", "))
+
 	// 执行 CREATE TABLE 语句
 	if err = DB.Exec(createStmt).Error; err != nil {
 		return "", err
 	}
 
-	// 将数据插入到建表语句中
-	var vals []string
+	// 2.参数化插入用户数据
+	var valsSQL, vals []string
 	for i := 1; i < len(excelRow); i++ {
 		curVal := excelRow[i]
-		curValSQL := fmt.Sprintf("(%s)", strings.Join(curVal, ","))
-		vals = append(vals, curValSQL)
+		// 将数据插入到建表语句中
+		inner := strings.Repeat("? ,", len(curVal))
+		curValSQL := fmt.Sprintf("(%s)", inner[:len(inner)-1])
+		valsSQL = append(valsSQL, curValSQL)
+		// 添加所有数据值到vals
+		vals = append(vals, curVal...)
 	}
-	insertStmt := fmt.Sprintf("INSERT INTO %s VALUES %s", tableName, strings.Join(vals, ","))
+
+	// 预编译插入语句，防止SQL注入
+	db, err := DB.DB()
+	if err != nil {
+		return "", err
+	}
+	insertStmt, err := db.Prepare(fmt.Sprintf("INSERT INTO %s VALUES %s", tableName, strings.Join(valsSQL, ",")))
+	if err != nil {
+		return "", err
+	}
+
 	// 执行 INSERT 语句
-	if err = DB.Exec(insertStmt).Error; err != nil {
+	// 手动转换 []string 到 []any
+	anyVals := make([]any, len(vals))
+	for i, v := range vals {
+		anyVals[i] = v
+	}
+	if _, err = insertStmt.Exec(anyVals...); err != nil {
 		return "", err
 	}
 	return tableName, nil
