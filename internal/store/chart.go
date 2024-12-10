@@ -14,9 +14,29 @@ import (
 	"txnbi-backend/pkg/myRedis"
 )
 
-func CreateChart(chartName, chartTableName, goal, genChart, genResult, chartType string, userID int64) error {
-	return DB.Create(&model.Chart{Name: chartName, Goal: goal, ChartTableName: chartTableName, ChartType: chartType,
+func CreateChart(ctx context.Context, chartName, chartTableName, goal, genChart, genResult, chartType string, userID int64) error {
+	err := DB.Create(&model.Chart{Name: chartName, Goal: goal, ChartTableName: chartTableName, ChartType: chartType,
 		UserID: userID, GenChart: genChart, GenResult: genResult}).Error
+
+	// 删除创建该图表的用户的，查看图表所有页的缓存
+	// 删除总页数
+	_, err = myRedis.Cli.Del(ctx, fmt.Sprintf("user-allChart-total:%d", userID)).Result()
+	if err != nil {
+		return err
+	}
+	// 删除查看图表的分页数据缓存
+	pageKeys, err := myRedis.Cli.Keys(ctx, "user-allChart-*").Result()
+	if err != nil {
+		return err
+	}
+	for _, pageKey := range pageKeys {
+		err = myRedis.Cli.Del(ctx, pageKey).Err()
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func CreateUserGenChart(chartID int64, excelRow [][]string) (DBTableName string, err error) {
@@ -103,8 +123,10 @@ func FindChartAndPage(ctx context.Context, userID int64, chartName string, curre
 		keyCount := fmt.Sprintf("user-allChart-total:%d", userID)
 		result, err := myRedis.Cli.Get(ctx, key).Result()
 		resultTotal, err1 := myRedis.Cli.Get(ctx, keyCount).Result()
+		fmt.Println(err)
+		fmt.Println(result)
 		// 缓存不存在则从 DB 层获取数据
-		if errors.Is(err, redis.Nil) || errors.Is(err1, redis.Nil) {
+		if err != nil && (errors.Is(err, redis.Nil) || errors.Is(err1, redis.Nil)) {
 			// 从 DB 层获取数据
 			err = DB.Offset(offset).Limit(pageSize).
 				Select("id", "chartType", "name", "goal", "genChart", "genResult", "updateTime").
@@ -116,7 +138,6 @@ func FindChartAndPage(ctx context.Context, userID int64, chartName string, curre
 			if err != nil {
 				return nil, 0, err
 			}
-
 			// 将结果缓存到 redis
 			chartsJSON, err := json.Marshal(charts)
 			if err != nil {

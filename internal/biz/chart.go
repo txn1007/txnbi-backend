@@ -15,7 +15,7 @@ import (
 	"txnbi-backend/pkg/doubao"
 )
 
-func GenChart(chartName, chartType, goal string, data *multipart.FileHeader, userID int64) (chartData, analysis string, err error) {
+func GenChart(ctx context.Context, chartName, chartType, goal string, data *multipart.FileHeader, userID int64) (chartData, analysis string, err error) {
 	// 将上传的excel数据转为csv类型字符串
 	fd, err := data.Open()
 	if err != nil {
@@ -58,7 +58,7 @@ func GenChart(chartName, chartType, goal string, data *multipart.FileHeader, use
 	}
 
 	// 存入数据库
-	err = store.CreateChart(chartName, DBChartName, goal, chartData, analysis, chartType, userID)
+	err = store.CreateChart(ctx, chartName, DBChartName, goal, chartData, analysis, chartType, userID)
 	if err != nil {
 		return "", "", err
 	}

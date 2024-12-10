@@ -61,7 +61,7 @@ func GenChart(ctx *gin.Context) {
 		return
 	}
 
-	data, analysis, err := biz.GenChart(req.ChartName, req.ChartType, req.Goal, req.File, ctx.GetInt64("userID"))
+	data, analysis, err := biz.GenChart(ctx, req.ChartName, req.ChartType, req.Goal, req.File, ctx.GetInt64("userID"))
 	if err != nil {
 		ctx.JSON(http.StatusOK, api.GenChartResp{StatusCode: 1, Message: err.Error()})
 		return
