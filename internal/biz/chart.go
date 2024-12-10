@@ -2,6 +2,7 @@ package biz
 
 import (
 	"bytes"
+	"context"
 	"encoding/csv"
 	"errors"
 	"fmt"
@@ -65,9 +66,9 @@ func GenChart(chartName, chartType, goal string, data *multipart.FileHeader, use
 	return chartData, analysis, nil
 }
 
-func ListMyChart(userID int64, chartName string, currentPage int, pageSize int) ([]api.ChartInfoV0, int64, error) {
+func ListMyChart(ctx context.Context, userID int64, chartName string, currentPage int, pageSize int) ([]api.ChartInfoV0, int64, error) {
 	// 查询数据库
-	charts, total, err := store.FindChartAndPage(userID, chartName, currentPage, pageSize)
+	charts, total, err := store.FindChartAndPage(ctx, userID, chartName, currentPage, pageSize)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -87,9 +88,9 @@ func ListMyChart(userID int64, chartName string, currentPage int, pageSize int) 
 	return apiCharts, total, nil
 }
 
-func DeleteMyChart(chartID, userID int64) error {
+func DeleteMyChart(ctx context.Context, chartID, userID int64) error {
 	// 获取图表信息
-	chart, err := store.GetChartByID(chartID)
+	chart, err := store.GetChartByID(ctx, chartID)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return fmt.Errorf("图表不存在！")
 	}
@@ -97,5 +98,5 @@ func DeleteMyChart(chartID, userID int64) error {
 	if chart.UserID != userID {
 		return fmt.Errorf("该图表并非由您创建！")
 	}
-	return store.DeleteChartByID(chartID)
+	return store.DeleteChartByID(ctx, chartID, userID)
 }

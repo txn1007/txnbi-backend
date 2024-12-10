@@ -90,8 +90,16 @@ func FindMyChart(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, api.FindMyChartResp{StatusCode: 1, Message: "pageSize不合法"})
 		return
 	}
+	chartNameLen := len(req.ChartName)
+	if chartNameLen > 127 {
+		ctx.JSON(http.StatusOK, api.FindMyChartResp{StatusCode: 1, Message: "表名的字符数应不大于 127 ！"})
+		return
+	}
+	if req.CurrentPage < 0 {
+		ctx.JSON(http.StatusOK, api.FindMyChartResp{StatusCode: 1, Message: "currentPage 不合法！"})
+	}
 
-	chart, total, err := biz.ListMyChart(ctx.GetInt64("userID"), req.ChartName, req.CurrentPage, req.PageSize)
+	chart, total, err := biz.ListMyChart(ctx, ctx.GetInt64("userID"), req.ChartName, req.CurrentPage, req.PageSize)
 	if err != nil {
 		ctx.JSON(http.StatusOK, api.FindMyChartResp{StatusCode: 1, Message: err.Error()})
 		return
@@ -116,7 +124,7 @@ func DeleteMyChart(ctx *gin.Context) {
 		return
 	}
 	userID := ctx.GetInt64("userID")
-	err := biz.DeleteMyChart(req.ChartID, userID)
+	err := biz.DeleteMyChart(ctx, req.ChartID, userID)
 	if err != nil {
 		ctx.JSON(http.StatusOK, api.DeleteMyChartResp{StatusCode: 1, Message: err.Error()})
 		return
