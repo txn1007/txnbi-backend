@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"txnbi-backend/api"
 	"txnbi-backend/internal/model"
 	"txnbi-backend/pkg/myRedis"
 )
@@ -244,4 +245,22 @@ func GetChartByID(ctx context.Context, chartID int64) (*model.Chart, error) {
 	}
 
 	return &chart, nil
+}
+
+func GetExampleChartByRedis(ctx context.Context) (charts []model.Chart, total int64, err error) {
+	charts = make([]model.Chart, 0, 4)
+	key := "chart-example"
+	result, err := myRedis.Cli.Get(ctx, key).Result()
+	if err != nil {
+		return nil, 0, err
+	}
+	err = json.Unmarshal([]byte(result), &charts)
+	if err != nil {
+		return nil, 0, err
+	}
+	return charts, 4, nil
+}
+
+func GetExampleChartByLocal(ctx context.Context) (charts []api.ChartInfoV0, total int64, err error) {
+	return ExampleChart, int64(len(ExampleChart)), nil
 }

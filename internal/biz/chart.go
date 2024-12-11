@@ -59,7 +59,7 @@ func GenChart(ctx context.Context, chartName, chartType, goal string, data *mult
 	}
 
 	// 存入数据库
-	chart := model.Chart{Name: chartName, ChartTableName: DBChartName, Goal: goal, GenChart: chartData, GenResult: analysis, ChartType: chartType}
+	chart := model.Chart{Name: chartName, UserID: userID, ChartTableName: DBChartName, Goal: goal, GenChart: chartData, GenResult: analysis, ChartType: chartType}
 	err = store.CreateChart(ctx, chart)
 	if err != nil {
 		return "", "", err
@@ -101,4 +101,23 @@ func DeleteMyChart(ctx context.Context, chartID, userID int64) error {
 		return fmt.Errorf("该图表并非由您创建！")
 	}
 	return store.DeleteChartByID(ctx, chartID, userID)
+}
+
+func ExampleChart(ctx context.Context) ([]api.ChartInfoV0, int64, error) {
+	// 从缓存中获取展示表
+	//charts, total, err := store.GetExampleChartByRedis(ctx)
+	//if err != nil {
+	//	return nil, 0, err
+	//}
+	//chartsInfo := make([]api.ChartInfoV0, len(charts))
+	//for i, chart := range charts {
+	//	chartsInfo[i] = api.ChartInfoV0{ChartID: chart.ID, ChartType: chart.ChartType, ChartGoal: chart.Goal,
+	//		ChartName: chart.Name, ChartCode: chart.GenChart, ChartResult: chart.GenResult,
+	//		UpdateTime: chart.UpdateTime.Format("2006-01-02 15:04:05"),
+	//	}
+	//}
+	//return chartsInfo, total, nil
+
+	// 获取本地硬编码的示例数据
+	return store.GetExampleChartByLocal(ctx)
 }

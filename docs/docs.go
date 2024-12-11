@@ -15,6 +15,26 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/chart/exampleChart": {
+            "get": {
+                "description": "用户获取自己的图表数据接口",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "chart"
+                ],
+                "summary": "用户获取自己的图表数据接口",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.ExampleChartResp"
+                        }
+                    }
+                }
+            }
+        },
         "/chart/findMyChart": {
             "get": {
                 "description": "用户获取自己的图表数据接口",
@@ -321,6 +341,26 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "statusCode": {
+                    "type": "integer"
+                }
+            }
+        },
+        "api.ExampleChartResp": {
+            "type": "object",
+            "properties": {
+                "charts": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/api.ChartInfoV0"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "statusCode": {
+                    "type": "integer"
+                },
+                "total": {
                     "type": "integer"
                 }
             }

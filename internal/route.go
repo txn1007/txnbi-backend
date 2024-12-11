@@ -18,6 +18,7 @@ func Route() *gin.Engine {
 		userGroup.GET("/CurrentUserDetail", middleware.AuthUserToken(), handle.CurrentUserDetail)
 		userGroup.POST("/loginOut", middleware.AuthUserToken(), handle.UserLoginOut)
 	}
+	routes.GET("/chart/exampleChart", handle.ExampleChart)
 	chartGroup := routes.Group("/chart", middleware.AuthUserToken())
 	{
 		//chartGroup.Use(middleware.Limiter()).POST("/gen", handle.GenChart)

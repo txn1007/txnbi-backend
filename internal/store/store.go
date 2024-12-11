@@ -23,4 +23,7 @@ func init() {
 	}
 	DB = db
 	fmt.Println("初始化全局DB成功！")
+
+	// 缓存示例图表
+	
 }

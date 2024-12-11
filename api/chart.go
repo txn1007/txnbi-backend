@@ -56,3 +56,14 @@ type DeleteMyChartResp struct {
 	StatusCode int    `json:"statusCode" form:"statusCode"`
 	Message    string `json:"message" form:"message"`
 }
+
+type ExampleChartReq struct {
+}
+
+type ExampleChartResp struct {
+	StatusCode int    `json:"statusCode" form:"statusCode"`
+	Message    string `json:"message" form:"message"`
+
+	Total  int64         `json:"total" form:"total"`
+	Charts []ChartInfoV0 `json:"charts"`
+}

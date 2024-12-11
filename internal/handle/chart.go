@@ -132,3 +132,23 @@ func DeleteMyChart(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, api.DeleteMyChartResp{StatusCode: 0, Message: "删除成功！"})
 	return
 }
+
+// ExampleChart godoc
+//
+//	@Summary		用户获取自己的图表数据接口
+//	@Description	用户获取自己的图表数据接口
+//	@Tags			chart
+//	@Produce		json
+//	@Param			Info	query		api.ExampleChartReq	true	"查询信息"
+//	@Success		200		{object}	api.ExampleChartResp
+//	@Router			/chart/exampleChart [get]
+func ExampleChart(ctx *gin.Context) {
+	charts, total, err := biz.ExampleChart(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusOK, api.ExampleChartResp{StatusCode: 1, Message: err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, api.ExampleChartResp{StatusCode: 0, Message: "查询成功！", Charts: charts, Total: total})
+	return
+}
