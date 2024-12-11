@@ -50,9 +50,8 @@ func UserRegister(ctx *gin.Context) {
 		return
 	}
 
-	err := biz.UserRegister(req.Account, req.Password, req.InviteCode)
+	err := biz.UserRegister(ctx, req.Account, req.Password, req.InviteCode)
 	if err != nil {
-		fmt.Println(err)
 		ctx.JSON(http.StatusOK, api.UserRegisterResp{StatusCode: 1, Message: err.Error()})
 		return
 	}

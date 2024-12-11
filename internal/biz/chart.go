@@ -11,6 +11,7 @@ import (
 	"mime/multipart"
 	"time"
 	"txnbi-backend/api"
+	"txnbi-backend/internal/model"
 	"txnbi-backend/internal/store"
 	"txnbi-backend/pkg/doubao"
 )
@@ -58,7 +59,8 @@ func GenChart(ctx context.Context, chartName, chartType, goal string, data *mult
 	}
 
 	// 存入数据库
-	err = store.CreateChart(ctx, chartName, DBChartName, goal, chartData, analysis, chartType, userID)
+	chart := model.Chart{Name: chartName, ChartTableName: DBChartName, Goal: goal, GenChart: chartData, GenResult: analysis, ChartType: chartType}
+	err = store.CreateChart(ctx, chart)
 	if err != nil {
 		return "", "", err
 	}

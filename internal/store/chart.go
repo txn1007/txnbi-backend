@@ -14,13 +14,12 @@ import (
 	"txnbi-backend/pkg/myRedis"
 )
 
-func CreateChart(ctx context.Context, chartName, chartTableName, goal, genChart, genResult, chartType string, userID int64) error {
-	err := DB.Create(&model.Chart{Name: chartName, Goal: goal, ChartTableName: chartTableName, ChartType: chartType,
-		UserID: userID, GenChart: genChart, GenResult: genResult}).Error
+func CreateChart(ctx context.Context, chart model.Chart) error {
+	err := DB.Create(&chart).Error
 
 	// 删除创建该图表的用户的，查看图表所有页的缓存
 	// 删除总页数
-	_, err = myRedis.Cli.Del(ctx, fmt.Sprintf("user-allChart-total:%d", userID)).Result()
+	_, err = myRedis.Cli.Del(ctx, fmt.Sprintf("user-allChart-total:%d", chart.UserID)).Result()
 	if err != nil {
 		return err
 	}
@@ -123,8 +122,6 @@ func FindChartAndPage(ctx context.Context, userID int64, chartName string, curre
 		keyCount := fmt.Sprintf("user-allChart-total:%d", userID)
 		result, err := myRedis.Cli.Get(ctx, key).Result()
 		resultTotal, err1 := myRedis.Cli.Get(ctx, keyCount).Result()
-		fmt.Println(err)
-		fmt.Println(result)
 		// 缓存不存在则从 DB 层获取数据
 		if err != nil && (errors.Is(err, redis.Nil) || errors.Is(err1, redis.Nil)) {
 			// 从 DB 层获取数据
