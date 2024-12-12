@@ -1,6 +1,8 @@
 package store
 
-import "txnbi-backend/api"
+import (
+	"txnbi-backend/api"
+)
 
 var ExampleChart = []api.ChartInfoV0{
 	{

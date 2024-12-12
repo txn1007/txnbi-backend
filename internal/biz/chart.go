@@ -104,20 +104,13 @@ func DeleteMyChart(ctx context.Context, chartID, userID int64) error {
 }
 
 func ExampleChart(ctx context.Context) ([]api.ChartInfoV0, int64, error) {
-	// 从缓存中获取展示表
-	//charts, total, err := store.GetExampleChartByRedis(ctx)
-	//if err != nil {
-	//	return nil, 0, err
-	//}
-	//chartsInfo := make([]api.ChartInfoV0, len(charts))
-	//for i, chart := range charts {
-	//	chartsInfo[i] = api.ChartInfoV0{ChartID: chart.ID, ChartType: chart.ChartType, ChartGoal: chart.Goal,
-	//		ChartName: chart.Name, ChartCode: chart.GenChart, ChartResult: chart.GenResult,
-	//		UpdateTime: chart.UpdateTime.Format("2006-01-02 15:04:05"),
-	//	}
-	//}
-	//return chartsInfo, total, nil
+	//从缓存中获取展示表
+	charts, total, err := store.GetExampleChartByRedis(ctx)
+	if err != nil {
+		return nil, 0, err
+	}
+	return charts, total, nil
 
-	// 获取本地硬编码的示例数据
-	return store.GetExampleChartByLocal(ctx)
+	//// 获取本地硬编码的示例数据
+	//return store.GetExampleChartByLocal(ctx)
 }

@@ -9,8 +9,8 @@ import (
 	"txnbi-backend/conf"
 	"txnbi-backend/internal/model"
 	"txnbi-backend/internal/store"
+	myRedis2 "txnbi-backend/internal/store/myRedis"
 	"txnbi-backend/pkg/jwt"
-	"txnbi-backend/pkg/myRedis"
 	"txnbi-backend/tool/encry"
 )
 
@@ -27,13 +27,13 @@ func UserLogin(account string, password string) (token string, err error) {
 	}
 	// 将token记录到redis中，标记为最新的token
 	token = jwt.SignForUser(ac.ID, ac.UserAccount, conf.JWTCfg.SignKey)
-	myRedis.SetUserToken(ac.ID, token)
+	myRedis2.SetUserToken(ac.ID, token)
 	return token, nil
 }
 
 func UserRegister(ctx context.Context, account, password, inviteCode string) error {
 	// 检查邀请码是否存在
-	is, err := myRedis.IsInviteCode(inviteCode)
+	is, err := myRedis2.IsInviteCode(inviteCode)
 	if !is {
 		return fmt.Errorf("邀请码不存在！")
 	}
@@ -80,6 +80,6 @@ func CurrentUserDetail(userID int64) (*model.User, error) {
 }
 
 func UserLoginOut(userID int64) error {
-	myRedis.DeleteUserToken(userID)
+	myRedis2.DeleteUserToken(userID)
 	return nil
 }

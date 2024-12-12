@@ -12,7 +12,7 @@ import (
 	"time"
 	"txnbi-backend/api"
 	"txnbi-backend/internal/model"
-	"txnbi-backend/pkg/myRedis"
+	"txnbi-backend/internal/store/myRedis"
 )
 
 func CreateChart(ctx context.Context, chart model.Chart) error {
@@ -247,18 +247,31 @@ func GetChartByID(ctx context.Context, chartID int64) (*model.Chart, error) {
 	return &chart, nil
 }
 
-func GetExampleChartByRedis(ctx context.Context) (charts []model.Chart, total int64, err error) {
-	charts = make([]model.Chart, 0, 4)
-	key := "chart-example"
-	result, err := myRedis.Cli.Get(ctx, key).Result()
+func GetExampleChartByRedis(ctx context.Context) (apiCharts []api.ChartInfoV0, total int64, err error) {
+	// 从 Redis 中获取数据
+	charts, err := myRedis.GetExampleChart(ctx)
+	// 只能从缓存中获取
+	if errors.Is(err, redis.Nil) {
+		return nil, 0, fmt.Errorf("在缓存中查询不到示例数据！")
+	}
 	if err != nil {
 		return nil, 0, err
 	}
-	err = json.Unmarshal([]byte(result), &charts)
-	if err != nil {
-		return nil, 0, err
+
+	// 转化
+	apiCharts = make([]api.ChartInfoV0, len(charts))
+	for i, chart := range charts {
+		apiCharts[i] = api.ChartInfoV0{
+			ChartID:     chart.ID,
+			ChartType:   chart.ChartType,
+			ChartGoal:   chart.Goal,
+			ChartName:   chart.Name,
+			ChartCode:   chart.GenChart,
+			ChartResult: chart.GenResult,
+			UpdateTime:  chart.UpdateTime.Format("2006-01-02 15:04:05"),
+		}
 	}
-	return charts, 4, nil
+	return apiCharts, int64(len(charts)), nil
 }
 
 func GetExampleChartByLocal(ctx context.Context) (charts []api.ChartInfoV0, total int64, err error) {

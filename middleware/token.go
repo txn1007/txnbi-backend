@@ -4,8 +4,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"txnbi-backend/conf"
+	"txnbi-backend/internal/store/myRedis"
 	"txnbi-backend/pkg/jwt"
-	"txnbi-backend/pkg/myRedis"
 )
 
 func AuthUserToken() gin.HandlerFunc {

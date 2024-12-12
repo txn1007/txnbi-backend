@@ -23,6 +23,6 @@ func GenModel() {
 	}
 	g.UseDB(db)
 
-	g.ApplyBasic(g.GenerateModel("chart"), g.GenerateModel("user"))
+	g.ApplyBasic(g.GenerateModel("chart"), g.GenerateModel("user"), g.GenerateModel("chart_example"))
 	g.Execute()
 }
