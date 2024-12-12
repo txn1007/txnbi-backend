@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"github.com/redis/go-redis/v9"
 	"regexp"
-	"strconv"
 	"strings"
 	"time"
 	"txnbi-backend/api"
@@ -101,76 +100,58 @@ func CreateUserGenChart(chartID int64, excelRow [][]string) (DBTableName string,
 	return tableName, nil
 }
 
-// FindChartAndPage 如果没有输入表名，则返回所有记录
-// 如果输入，则查找表名对应的记录
-// 分页查询
-func FindChartAndPage(ctx context.Context, userID int64, chartName string, currentPage, pageSize int) (charts []model.Chart, total int64, err error) {
+// GetChartsByUserID 分页获取该用户的图表信息
+func GetChartsByUserID(ctx context.Context, userID int64, currentPage, pageSize int) (charts []model.Chart, total int64, err error) {
 	charts = make([]model.Chart, 0, pageSize)
-	// 计算偏移量
+
 	offset := (currentPage - 1) * pageSize
-	// 根据是否为查询构建 SQL的where语句
-	var whereSQL string
-	if chartName != "" {
-		whereSQL = fmt.Sprintf("name = '%s' AND userId = %d", chartName, userID)
-	} else {
-		whereSQL = fmt.Sprintf("userId = %d", userID)
-	}
-
-	// 如果不是搜索，则查询所有记录
-	if chartName == "" {
-		// 先从缓存中获取数据
-		key := fmt.Sprintf("user-allChart-%d:%d", offset, userID)
-		keyCount := fmt.Sprintf("user-allChart-total:%d", userID)
-		result, err := myRedis.Cli.Get(ctx, key).Result()
-		resultTotal, err1 := myRedis.Cli.Get(ctx, keyCount).Result()
-		// 缓存不存在则从 DB 层获取数据
-		if err != nil && (errors.Is(err, redis.Nil) || errors.Is(err1, redis.Nil)) {
-			// 从 DB 层获取数据
-			err = DB.Offset(offset).Limit(pageSize).
-				Select("id", "chartType", "name", "goal", "genChart", "genResult", "updateTime").
-				Where(whereSQL + " AND isDelete = 0").Order("updateTime desc").Find(&charts).Error
-			if err != nil {
-				return nil, 0, err
-			}
-			err = DB.Model(&model.Chart{}).Where(whereSQL + " AND isDelete = 0").Count(&total).Error
-			if err != nil {
-				return nil, 0, err
-			}
-			// 将结果缓存到 redis
-			chartsJSON, err := json.Marshal(charts)
-			if err != nil {
-				return nil, 0, err
-			}
-			_, err = myRedis.Cli.Set(ctx, key, chartsJSON, 24*time.Hour).Result()
-			if err != nil {
-				return nil, 0, err
-			}
-			_, err = myRedis.Cli.Set(ctx, keyCount, total, 24*time.Hour).Result()
-			if err != nil {
-				return nil, 0, err
-			}
-
-			return charts, total, nil
-		}
-		// 缓存中存在，则将缓存中的数据解析到 chart切片中
-		err = json.Unmarshal([]byte(result), &charts)
+	// 先从缓存中获取数据
+	charts, total, err = myRedis.GetAllCharts(ctx, userID, offset)
+	// 缓存不存在则从 DB 层获取数据
+	if err != nil && errors.Is(err, redis.Nil) {
+		whereSQL := fmt.Sprintf("userId = %d AND isDelete = 0", userID)
+		// 从 DB 层获取数据
+		err = DB.Offset(offset).Limit(pageSize).
+			Select("id", "chartType", "name", "goal", "genChart", "genResult", "updateTime").
+			Where(whereSQL + " AND isDelete = 0").Order("updateTime desc").Find(&charts).Error
 		if err != nil {
 			return nil, 0, err
 		}
-		total, err = strconv.ParseInt(resultTotal, 10, 64)
+		err = DB.Model(&model.Chart{}).Where(whereSQL + " AND isDelete = 0").Count(&total).Error
+		if err != nil {
+			return nil, 0, err
+		}
+		// 将结果缓存到 redis
+		err = myRedis.SetAllCharts(ctx, userID, total, offset, charts)
 		if err != nil {
 			return nil, 0, err
 		}
 		return charts, total, nil
 	}
+	// 缓存中存在，则将缓存中的数据解析到 chart切片中
+	err = myRedis.SetAllCharts(ctx, userID, total, offset, charts)
+	if err != nil {
+		return nil, 0, err
+	}
+	return charts, total, nil
+}
+
+// FindChartsByUserIDAndChartNane 分页查找该用户的图表信息
+func FindChartsByUserIDAndChartNane(ctx context.Context, userID int64, chartName string, currentPage, pageSize int) (charts []model.Chart, total int64, err error) {
+	charts = make([]model.Chart, 0, pageSize)
+
+	offset := (currentPage - 1) * pageSize
+	whereSQL := fmt.Sprintf("name = '%s' AND userId = %d AND isDelete = 0", chartName, userID)
 
 	// 搜索图表
 	err = DB.Offset(offset).Limit(pageSize).
 		Select("id", "chartType", "name", "goal", "genChart", "genResult", "updateTime").
-		Where(whereSQL + " AND isDelete = 0").Order("updateTime desc").Find(&charts).Error
+		Where(whereSQL).Order("updateTime desc").Find(&charts).Error
 	if err != nil {
 		return nil, 0, err
 	}
+
+	// 计算总数
 	err = DB.Model(&model.Chart{}).Where(whereSQL).Count(&total).Error
 	if err != nil {
 		return nil, 0, err

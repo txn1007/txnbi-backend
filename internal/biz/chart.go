@@ -68,16 +68,24 @@ func GenChart(ctx context.Context, chartName, chartType, goal string, data *mult
 	return chartData, analysis, nil
 }
 
-func ListMyChart(ctx context.Context, userID int64, chartName string, currentPage int, pageSize int) ([]api.ChartInfoV0, int64, error) {
-	// 查询数据库
-	charts, total, err := store.FindChartAndPage(ctx, userID, chartName, currentPage, pageSize)
-	if err != nil {
-		return nil, 0, err
+func ListMyChart(ctx context.Context, userID int64, chartName string, currentPage int, pageSize int) (charts []api.ChartInfoV0, total int64, err error) {
+	var modelCharts []model.Chart
+	// 根据是否查询表名参数，查询数据库
+	if chartName == "" {
+		modelCharts, total, err = store.GetChartsByUserID(ctx, userID, currentPage, pageSize)
+		if err != nil {
+			return nil, 0, err
+		}
+	} else {
+		modelCharts, total, err = store.FindChartsByUserIDAndChartNane(ctx, userID, chartName, currentPage, pageSize)
+		if err != nil {
+			return nil, 0, err
+		}
 	}
-	// 转化
-	apiCharts := make([]api.ChartInfoV0, len(charts))
-	for i, chart := range charts {
-		apiCharts[i] = api.ChartInfoV0{
+	// 将 model.Chart 转化为 api.ChartInfoV0
+	charts = make([]api.ChartInfoV0, len(charts))
+	for i, chart := range modelCharts {
+		charts[i] = api.ChartInfoV0{
 			ChartID:     chart.ID,
 			ChartType:   chart.ChartType,
 			ChartGoal:   chart.Goal,
@@ -87,7 +95,7 @@ func ListMyChart(ctx context.Context, userID int64, chartName string, currentPag
 			UpdateTime:  chart.UpdateTime.Format("2006-01-02 15:04:05"),
 		}
 	}
-	return apiCharts, total, nil
+	return charts, total, nil
 }
 
 func DeleteMyChart(ctx context.Context, chartID, userID int64) error {
