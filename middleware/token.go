@@ -22,11 +22,12 @@ func AuthUserToken() gin.HandlerFunc {
 			}
 		}
 		id, userAccount, err := jwt.ParseUserToken(token, conf.JWTCfg.SignKey)
-		if err != nil {
+		if err != nil || id <= 0 {
 			c.JSON(http.StatusUnauthorized, gin.H{"statusCode": 1, "message": "用户未登陆！"})
 			c.Abort()
 			return
 		}
+
 		redisToken, err := myRedis.GetUserToken(id)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"statusCode": 1, "message": "用户未登陆！"})

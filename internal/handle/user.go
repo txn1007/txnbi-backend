@@ -144,13 +144,6 @@ func CurrentUserDetail(ctx *gin.Context) {
 //	@Router			/user/loginOut [post]
 func UserLoginOut(ctx *gin.Context) {
 	userID := ctx.GetInt64("userID")
-	// 校验参数
-	if userID <= 0 {
-		tlog.L.Debug().Msgf("用户登出失败，原因：%s,原始数据: userID = %d ", "userID不合法", userID)
-		ctx.JSON(http.StatusOK, api.UserLoginOutResp{StatusCode: 1, Message: "退出登陆失败！"})
-		return
-	}
-
 	err := biz.UserLoginOut(userID)
 	if err != nil {
 		tlog.L.Debug().Msgf("用户登出失败，原因：%s,原始数据: userID = %d ", err.Error(), userID)
