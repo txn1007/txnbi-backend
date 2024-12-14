@@ -83,7 +83,7 @@ func ListMyChart(ctx context.Context, userID int64, chartName string, currentPag
 		}
 	}
 	// 将 model.Chart 转化为 api.ChartInfoV0
-	charts = make([]api.ChartInfoV0, len(charts))
+	charts = make([]api.ChartInfoV0, len(modelCharts))
 	for i, chart := range modelCharts {
 		charts[i] = api.ChartInfoV0{
 			ChartID:     chart.ID,
