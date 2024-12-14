@@ -16,7 +16,7 @@ type limiterLevel struct{}
 
 // 限流级别
 var (
-	// LowLevel 每秒1次
+	// LowLevel 每秒3次
 	LowLevel = limiterLevel{}
 	// MidLevel 每分钟30次
 	MidLevel = limiterLevel{}
@@ -70,7 +70,7 @@ func getRate(level limiterLevel) limiter.Rate {
 	case LowLevel:
 		rate = limiter.Rate{
 			Period: time.Second,
-			Limit:  1,
+			Limit:  3,
 		}
 	case MidLevel:
 		rate = limiter.Rate{
