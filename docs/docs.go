@@ -172,7 +172,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/CurrentUserDetail": {
+        "/user/currentUserDetail": {
             "get": {
                 "description": "用户自身详情接口",
                 "produces": [

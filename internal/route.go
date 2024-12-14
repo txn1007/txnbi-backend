@@ -6,23 +6,31 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"txnbi-backend/internal/handle"
 	"txnbi-backend/middleware"
+	"txnbi-backend/middleware/myLimiter"
 )
 
 func Route() *gin.Engine {
 	routes := gin.Default()
 	routes.Use(middleware.CORSMiddleware())
-	userGroup := routes.Group("/user")
+
+	// 用户模块
+	userGroup := routes.Group("/user", myLimiter.New("user", myLimiter.LowLevel))
 	{
 		userGroup.POST("/login", handle.UserLogin)       // 用户登陆接口
 		userGroup.POST("/register", handle.UserRegister) //用户注册接口
-		userGroup.GET("/CurrentUserDetail", middleware.AuthUserToken(), handle.CurrentUserDetail)
+		userGroup.GET("/currentUserDetail", middleware.AuthUserToken(), handle.CurrentUserDetail)
 		userGroup.POST("/loginOut", middleware.AuthUserToken(), handle.UserLoginOut)
 	}
-	routes.GET("/chart/exampleChart", handle.ExampleChart)
-	chartGroup := routes.Group("/chart", middleware.AuthUserToken())
+
+	// 示例图表接口
+	routes.GET("/chart/exampleChart", myLimiter.New("exampleChart", myLimiter.MidLevel), handle.ExampleChart)
+
+	// 图表模块
+	chartGroupMiddle := []gin.HandlerFunc{myLimiter.New("chart", myLimiter.LowLevel), middleware.AuthUserToken()}
+	chartGroup := routes.Group("/chart", chartGroupMiddle...)
 	{
-		//chartGroup.Use(middleware.Limiter()).POST("/gen", handle.GenChart)
-		chartGroup.POST("/gen", handle.GenChart)
+		// 生成图表接口因需调用第三方接口，，所以需要更严格的限流
+		chartGroup.POST("/gen", myLimiter.New("chart-gen", myLimiter.VeryHighLevel), handle.GenChart)
 		chartGroup.POST("/myChartDel", handle.DeleteMyChart)
 		chartGroup.GET("/findMyChart", handle.FindMyChart)
 	}

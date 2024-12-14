@@ -256,7 +256,7 @@ paths:
       summary: 删除图表数据接口
       tags:
       - chart
-  /user/CurrentUserDetail:
+  /user/currentUserDetail:
     get:
       description: 用户自身详情接口
       parameters:

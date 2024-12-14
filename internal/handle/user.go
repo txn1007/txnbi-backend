@@ -101,7 +101,7 @@ func UserRegister(ctx *gin.Context) {
 //	@Produce		json
 //	@Param			Info	query		api.CurrentUserDetailReq	true "查询参数"
 //	@Success		200		{object}	api.CurrentUserDetailResp
-//	@Router			/user/CurrentUserDetail [get]
+//	@Router			/user/currentUserDetail [get]
 func CurrentUserDetail(ctx *gin.Context) {
 	var req api.CurrentUserDetailReq
 	if err := ctx.ShouldBind(&req); err != nil {
