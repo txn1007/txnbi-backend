@@ -101,7 +101,7 @@ func UserRegister(ctx *gin.Context) {
 //	@Produce		json
 //	@Param			Info	query		api.CurrentUserDetailReq	true "查询参数"
 //	@Success		200		{object}	api.CurrentUserDetailResp
-//	@Router			/user/currentUserDetail [get]
+//	@Router			/user/auth/currentUserDetail [get]
 func CurrentUserDetail(ctx *gin.Context) {
 	var req api.CurrentUserDetailReq
 	if err := ctx.ShouldBind(&req); err != nil {
@@ -141,7 +141,7 @@ func CurrentUserDetail(ctx *gin.Context) {
 //	@Produce		json
 //	@Param			Info	query		api.UserLoginOutReq	true "参数"
 //	@Success		200		{object}	api.UserLoginOutResp
-//	@Router			/user/loginOut [post]
+//	@Router			/user/auth/loginOut [post]
 func UserLoginOut(ctx *gin.Context) {
 	userID := ctx.GetInt64("userID")
 	err := biz.UserLoginOut(userID)

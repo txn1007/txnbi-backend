@@ -15,27 +15,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/chart/exampleChart": {
-            "get": {
-                "description": "用户获取自己的图表数据接口",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "chart"
-                ],
-                "summary": "用户获取自己的图表数据接口",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/api.ExampleChartResp"
-                        }
-                    }
-                }
-            }
-        },
-        "/chart/findMyChart": {
+        "/chart/auth/findMyChart": {
             "get": {
                 "description": "用户获取自己的图表数据接口",
                 "produces": [
@@ -78,7 +58,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/chart/gen": {
+        "/chart/auth/gen": {
             "post": {
                 "description": "AI生成图表数据接口",
                 "consumes": [
@@ -138,7 +118,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/chart/myChartDel": {
+        "/chart/auth/myChartDel": {
             "post": {
                 "description": "删除图表数据接口",
                 "produces": [
@@ -172,7 +152,27 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/currentUserDetail": {
+        "/chart/exampleChart": {
+            "get": {
+                "description": "用户获取自己的图表数据接口",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "chart"
+                ],
+                "summary": "用户获取自己的图表数据接口",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.ExampleChartResp"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/auth/currentUserDetail": {
             "get": {
                 "description": "用户自身详情接口",
                 "produces": [
@@ -195,6 +195,34 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/api.CurrentUserDetailResp"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/auth/loginOut": {
+            "post": {
+                "description": "用户自身详情接口",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "用户退出登陆接口",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "name": "token",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.UserLoginOutResp"
                         }
                     }
                 }
@@ -226,34 +254,6 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/api.UserLoginResp"
-                        }
-                    }
-                }
-            }
-        },
-        "/user/loginOut": {
-            "post": {
-                "description": "用户自身详情接口",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user"
-                ],
-                "summary": "用户退出登陆接口",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "name": "token",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/api.UserLoginOutResp"
                         }
                     }
                 }

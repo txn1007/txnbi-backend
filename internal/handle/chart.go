@@ -24,7 +24,7 @@ import (
 //	@Param			goal		formData	string	true	"查询目标"
 //	@Param			file		formData	file	true	"用户上传的文件"
 //	@Success		200			{object}	api.GenChartResp
-//	@Router			/chart/gen [post]
+//	@Router			/chart/auth/gen [post]
 func GenChart(ctx *gin.Context) {
 	var req api.GenChartReq
 	if err := ctx.ShouldBind(&req); err != nil {
@@ -92,7 +92,7 @@ func GenChart(ctx *gin.Context) {
 //	@Produce		json
 //	@Param			Info	query		api.FindMyChartReq	true	"查询信息"
 //	@Success		200		{object}	api.FindMyChartResp
-//	@Router			/chart/findMyChart [get]
+//	@Router			/chart/auth/findMyChart [get]
 func FindMyChart(ctx *gin.Context) {
 	var req api.FindMyChartReq
 	if err := ctx.ShouldBindQuery(&req); err != nil {
@@ -139,7 +139,7 @@ func FindMyChart(ctx *gin.Context) {
 //	@Produce		json
 //	@Param			Info	formData	api.DeleteMyChartReq	true	"查询信息"
 //	@Success		200		{object}	api.DeleteMyChartResp
-//	@Router			/chart/myChartDel [post]
+//	@Router			/chart/auth/myChartDel [post]
 func DeleteMyChart(ctx *gin.Context) {
 	var req api.DeleteMyChartReq
 	if err := ctx.ShouldBind(&req); err != nil {

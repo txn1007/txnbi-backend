@@ -153,20 +153,7 @@ info:
   title: txnbi API
   version: "1.0"
 paths:
-  /chart/exampleChart:
-    get:
-      description: 用户获取自己的图表数据接口
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/api.ExampleChartResp'
-      summary: 用户获取自己的图表数据接口
-      tags:
-      - chart
-  /chart/findMyChart:
+  /chart/auth/findMyChart:
     get:
       description: 用户获取自己的图表数据接口
       parameters:
@@ -193,7 +180,7 @@ paths:
       summary: 用户获取自己的图表数据接口
       tags:
       - chart
-  /chart/gen:
+  /chart/auth/gen:
     post:
       consumes:
       - multipart/form-data
@@ -234,7 +221,7 @@ paths:
       summary: AI生成图表数据接口
       tags:
       - chart
-  /chart/myChartDel:
+  /chart/auth/myChartDel:
     post:
       description: 删除图表数据接口
       parameters:
@@ -256,7 +243,20 @@ paths:
       summary: 删除图表数据接口
       tags:
       - chart
-  /user/currentUserDetail:
+  /chart/exampleChart:
+    get:
+      description: 用户获取自己的图表数据接口
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.ExampleChartResp'
+      summary: 用户获取自己的图表数据接口
+      tags:
+      - chart
+  /user/auth/currentUserDetail:
     get:
       description: 用户自身详情接口
       parameters:
@@ -272,6 +272,24 @@ paths:
           schema:
             $ref: '#/definitions/api.CurrentUserDetailResp'
       summary: 用户自身详情接口
+      tags:
+      - user
+  /user/auth/loginOut:
+    post:
+      description: 用户自身详情接口
+      parameters:
+      - in: query
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.UserLoginOutResp'
+      summary: 用户退出登陆接口
       tags:
       - user
   /user/login:
@@ -292,24 +310,6 @@ paths:
           schema:
             $ref: '#/definitions/api.UserLoginResp'
       summary: 用户登陆接口
-      tags:
-      - user
-  /user/loginOut:
-    post:
-      description: 用户自身详情接口
-      parameters:
-      - in: query
-        name: token
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/api.UserLoginOutResp'
-      summary: 用户退出登陆接口
       tags:
       - user
   /user/register:

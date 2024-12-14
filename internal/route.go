@@ -14,25 +14,33 @@ func Route() *gin.Engine {
 	routes.Use(middleware.CORSMiddleware())
 
 	// 用户模块
-	userGroup := routes.Group("/user", myLimiter.New("user", myLimiter.LowLevel))
+	userGroutMiddle := []gin.HandlerFunc{myLimiter.New("user", myLimiter.LowLevel)}
+	userGroup := routes.Group("/user", userGroutMiddle...)
 	{
 		userGroup.POST("/login", handle.UserLogin)       // 用户登陆接口
 		userGroup.POST("/register", handle.UserRegister) //用户注册接口
-		userGroup.GET("/currentUserDetail", middleware.AuthUserToken(), handle.CurrentUserDetail)
-		userGroup.POST("/loginOut", middleware.AuthUserToken(), handle.UserLoginOut)
+		authGroup := userGroup.Group("/auth", middleware.AuthUserToken())
+		{
+			authGroup.GET("/currentUserDetail", handle.CurrentUserDetail)
+			authGroup.POST("/loginOut", handle.UserLoginOut)
+		}
 	}
 
-	// 示例图表接口
-	routes.GET("/chart/exampleChart", myLimiter.New("exampleChart", myLimiter.MidLevel), handle.ExampleChart)
-
 	// 图表模块
-	chartGroupMiddle := []gin.HandlerFunc{myLimiter.New("chart", myLimiter.LowLevel), middleware.AuthUserToken()}
+	// 图表模块中间件
+	chartGroupMiddle := []gin.HandlerFunc{myLimiter.New("chart", myLimiter.LowLevel)}
 	chartGroup := routes.Group("/chart", chartGroupMiddle...)
 	{
-		// 生成图表接口因需调用第三方接口，，所以需要更严格的限流
-		chartGroup.POST("/gen", myLimiter.New("chart-gen", myLimiter.VeryHighLevel), handle.GenChart)
-		chartGroup.POST("/myChartDel", handle.DeleteMyChart)
-		chartGroup.GET("/findMyChart", handle.FindMyChart)
+		// 示例图表接口
+		routes.GET("/chart/exampleChart", handle.ExampleChart)
+		authGroup := chartGroup.Group("/auth", middleware.AuthUserToken())
+		{
+			// 生成图表接口因需调用第三方接口，，所以需要更严格的限流
+			authGroup.POST("/gen", myLimiter.New("chart-gen", myLimiter.VeryHighLevel), handle.GenChart)
+			authGroup.POST("/myChartDel", handle.DeleteMyChart)
+			authGroup.GET("/findMyChart", handle.FindMyChart)
+		}
+
 	}
 
 	routes.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
