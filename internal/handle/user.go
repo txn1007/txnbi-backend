@@ -60,16 +60,36 @@ func UserLogin(ctx *gin.Context) {
 func UserRegister(ctx *gin.Context) {
 	var req api.UserRegisterReq
 	if err := ctx.ShouldBind(&req); err != nil {
+		tlog.L.Debug().Msgf("用户注册失败，原因: %s,原始数据: 输入的账号: %s 输入的密码: %s, 输入的邀请码: %s", err.Error(), req.Account, req.Password, req.InviteCode)
 		ctx.JSON(http.StatusOK, api.UserRegisterResp{StatusCode: 1, Message: err.Error()})
+		return
+	}
+
+	// 校验参数
+	accountLen, passwordLen, inviteCodeLen := len(req.Account), len(req.Password), len(req.InviteCode)
+	if accountLen < 6 || accountLen > 16 {
+		tlog.L.Debug().Msgf("用户注册失败，原因: %s,输入的账号: %s 输入的密码: %s, 输入的邀请码: %s", "输入的账号长度不合法", req.Account, req.Password, req.InviteCode)
+		ctx.JSON(http.StatusOK, api.UserLoginResp{StatusCode: 1, Message: "用户名长度超出要求范围，长度应在6 ~ 16位"})
+		return
+	}
+	if passwordLen < 8 || passwordLen > 24 {
+		tlog.L.Debug().Msgf("用户注册失败，: %s,输入的账号: %s 输入的密码: %s, 输入的邀请码: %s", "输入的密码长度不合法", req.Account, req.Password, req.InviteCode)
+		ctx.JSON(http.StatusOK, api.UserLoginResp{StatusCode: 1, Message: "密码长度超出要求范围，长度应在8 ~ 24位"})
+		return
+	}
+	if inviteCodeLen < 2 || inviteCodeLen > 16 {
+		tlog.L.Debug().Msgf("用户注册失败，: %s,输入的账号: %s 输入的密码: %s, 输入的邀请码: %s", "输入的邀请码长度不合法", req.Account, req.Password, req.InviteCode)
+		ctx.JSON(http.StatusOK, api.UserLoginResp{StatusCode: 1, Message: "邀请码长度超出要求范围，长度应在 2 ~ 24位"})
 		return
 	}
 
 	err := biz.UserRegister(ctx, req.Account, req.Password, req.InviteCode)
 	if err != nil {
+		tlog.L.Debug().Msgf("用户注册失败，原因: %s,原始数据: 输入的账号: %s 输入的密码: %s,输入的邀请码: %s", err.Error(), req.Account, req.Password, req.InviteCode)
 		ctx.JSON(http.StatusOK, api.UserRegisterResp{StatusCode: 1, Message: err.Error()})
 		return
 	}
-
+	tlog.L.Debug().Msgf("用户注册成功，原始数据: 输入的账号: %s 输入的密码: %s ,输入的邀请码: %s", req.Account, req.Password, req.InviteCode)
 	ctx.JSON(http.StatusOK, api.UserRegisterResp{StatusCode: 0, Message: "注册成功！"})
 }
 
