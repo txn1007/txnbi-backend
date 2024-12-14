@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"txnbi-backend/api"
+	"txnbi-backend/errs"
 	"txnbi-backend/internal/biz"
 	"txnbi-backend/pkg/tlog"
 )
@@ -21,7 +22,7 @@ func UserLogin(ctx *gin.Context) {
 	var req api.UserLoginReq
 	if err := ctx.ShouldBind(&req); err != nil {
 		tlog.L.Debug().Msgf("用户登陆失败，原因: %s,原始数据: 输入的账号: %s 输入的密码: %s", err.Error(), req.Account, req.Password)
-		ctx.JSON(http.StatusOK, api.UserLoginResp{StatusCode: 1, Message: "参数不合法！"})
+		ctx.JSON(http.StatusOK, api.UserLoginResp{StatusCode: 1, Message: errs.ErrInvalidInputParameters.Error()})
 		return
 	}
 
@@ -29,19 +30,19 @@ func UserLogin(ctx *gin.Context) {
 	accountLen, passwordLen := len(req.Account), len(req.Password)
 	if accountLen < 6 || accountLen > 16 {
 		tlog.L.Debug().Msgf("用户登陆失败，原因: %s,输入的账号: %s 输入的密码: %s", "输入的账号长度不合法", req.Account, req.Password)
-		ctx.JSON(http.StatusOK, api.UserLoginResp{StatusCode: 1, Message: "用户名长度超出要求范围，长度应在6 ~ 16位"})
+		ctx.JSON(http.StatusOK, api.UserLoginResp{StatusCode: 1, Message: errs.ErrUsernameLengthOutOfRange.Error()})
 		return
 	}
 	if passwordLen < 8 || passwordLen > 24 {
 		tlog.L.Debug().Msgf("用户登陆失败，: %s,输入的账号: %s 输入的密码: %s", "输入的密码长度不合法", req.Account, req.Password)
-		ctx.JSON(http.StatusOK, api.UserLoginResp{StatusCode: 1, Message: "密码长度超出要求范围，长度应在8 ~ 24位"})
+		ctx.JSON(http.StatusOK, api.UserLoginResp{StatusCode: 1, Message: errs.ErrPasswordLengthOutOfRange.Error()})
 		return
 	}
 
 	token, err := biz.UserLogin(req.Account, req.Password)
 	if err != nil {
 		tlog.L.Debug().Msgf("用户登陆失败，: %s,输入的账号: %s 输入的密码: %s", err.Error(), req.Account, req.Password)
-		ctx.JSON(http.StatusOK, api.UserLoginResp{StatusCode: 1, Message: err.Error()})
+		ctx.JSON(http.StatusOK, api.UserLoginResp{StatusCode: 1, Message: errs.ErrUserLoginFailed.Error()})
 		return
 	}
 	tlog.L.Debug().Msgf("用户登陆成功，输入的账号: %s 输入的密码: %s", req.Account, req.Password)
@@ -61,7 +62,7 @@ func UserRegister(ctx *gin.Context) {
 	var req api.UserRegisterReq
 	if err := ctx.ShouldBind(&req); err != nil {
 		tlog.L.Debug().Msgf("用户注册失败，原因: %s,原始数据: 输入的账号: %s 输入的密码: %s, 输入的邀请码: %s", err.Error(), req.Account, req.Password, req.InviteCode)
-		ctx.JSON(http.StatusOK, api.UserRegisterResp{StatusCode: 1, Message: err.Error()})
+		ctx.JSON(http.StatusOK, api.UserRegisterResp{StatusCode: 1, Message: errs.ErrUserRegistrationFailed.Error()})
 		return
 	}
 
@@ -69,24 +70,24 @@ func UserRegister(ctx *gin.Context) {
 	accountLen, passwordLen, inviteCodeLen := len(req.Account), len(req.Password), len(req.InviteCode)
 	if accountLen < 6 || accountLen > 16 {
 		tlog.L.Debug().Msgf("用户注册失败，原因: %s,输入的账号: %s 输入的密码: %s, 输入的邀请码: %s", "输入的账号长度不合法", req.Account, req.Password, req.InviteCode)
-		ctx.JSON(http.StatusOK, api.UserLoginResp{StatusCode: 1, Message: "用户名长度超出要求范围，长度应在6 ~ 16位"})
+		ctx.JSON(http.StatusOK, api.UserLoginResp{StatusCode: 1, Message: errs.ErrUsernameLengthOutOfRange.Error()})
 		return
 	}
 	if passwordLen < 8 || passwordLen > 24 {
 		tlog.L.Debug().Msgf("用户注册失败，: %s,输入的账号: %s 输入的密码: %s, 输入的邀请码: %s", "输入的密码长度不合法", req.Account, req.Password, req.InviteCode)
-		ctx.JSON(http.StatusOK, api.UserLoginResp{StatusCode: 1, Message: "密码长度超出要求范围，长度应在8 ~ 24位"})
+		ctx.JSON(http.StatusOK, api.UserLoginResp{StatusCode: 1, Message: errs.ErrPasswordLengthOutOfRange.Error()})
 		return
 	}
 	if inviteCodeLen < 2 || inviteCodeLen > 16 {
 		tlog.L.Debug().Msgf("用户注册失败，: %s,输入的账号: %s 输入的密码: %s, 输入的邀请码: %s", "输入的邀请码长度不合法", req.Account, req.Password, req.InviteCode)
-		ctx.JSON(http.StatusOK, api.UserLoginResp{StatusCode: 1, Message: "邀请码长度超出要求范围，长度应在 2 ~ 24位"})
+		ctx.JSON(http.StatusOK, api.UserLoginResp{StatusCode: 1, Message: errs.ErrInviteCodeLengthOutOfRange.Error()})
 		return
 	}
 
 	err := biz.UserRegister(ctx, req.Account, req.Password, req.InviteCode)
 	if err != nil {
 		tlog.L.Debug().Msgf("用户注册失败，原因: %s,原始数据: 输入的账号: %s 输入的密码: %s,输入的邀请码: %s", err.Error(), req.Account, req.Password, req.InviteCode)
-		ctx.JSON(http.StatusOK, api.UserRegisterResp{StatusCode: 1, Message: err.Error()})
+		ctx.JSON(http.StatusOK, api.UserRegisterResp{StatusCode: 1, Message: errs.ErrUserRegistrationFailed.Error()})
 		return
 	}
 	tlog.L.Debug().Msgf("用户注册成功，原始数据: 输入的账号: %s 输入的密码: %s ,输入的邀请码: %s", req.Account, req.Password, req.InviteCode)
@@ -106,21 +107,16 @@ func CurrentUserDetail(ctx *gin.Context) {
 	var req api.CurrentUserDetailReq
 	if err := ctx.ShouldBind(&req); err != nil {
 		tlog.L.Debug().Msgf("获取当前用户详细信息失败，原因：%s", err.Error())
-		ctx.JSON(http.StatusOK, api.UserRegisterResp{StatusCode: 1, Message: "获取当前用户详细信息失败！"})
+		ctx.JSON(http.StatusOK, api.UserRegisterResp{StatusCode: 1, Message: errs.ErrGetCurrentUserDetailsFailed.Error()})
 		return
 	}
+
 	userID := ctx.GetInt64("userID")
-	// 校验参数
-	if userID <= 0 {
-		tlog.L.Debug().Msgf("获取当前用户详细信息失败，原因：%s,原始数据: userID = %d ", "userID不合法", userID)
-		ctx.JSON(http.StatusOK, api.UserLoginOutResp{StatusCode: 1, Message: "获取当前用户详细信息失败！"})
-		return
-	}
 
 	user, err := biz.CurrentUserDetail(userID)
 	if err != nil {
 		tlog.L.Debug().Msgf("获取当前用户详细信息失败，原因：%s,原始数据: userID = %d ", err.Error(), userID)
-		ctx.JSON(http.StatusOK, api.UserRegisterResp{StatusCode: 1, Message: "获取当前用户详细信息失败"})
+		ctx.JSON(http.StatusOK, api.UserRegisterResp{StatusCode: 1, Message: errs.ErrGetCurrentUserDetailsFailed.Error()})
 		return
 	}
 	// 成功
@@ -147,7 +143,7 @@ func UserLoginOut(ctx *gin.Context) {
 	err := biz.UserLoginOut(userID)
 	if err != nil {
 		tlog.L.Debug().Msgf("用户登出失败，原因：%s,原始数据: userID = %d ", err.Error(), userID)
-		ctx.JSON(http.StatusOK, api.UserLoginOutResp{StatusCode: 1, Message: "退出登陆失败！"})
+		ctx.JSON(http.StatusOK, api.UserLoginOutResp{StatusCode: 1, Message: errs.ErrLogoutFailed.Error()})
 		return
 	}
 	tlog.L.Debug().Msgf("用户登出成功，原始数据: userID = %d ", userID)

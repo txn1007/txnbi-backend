@@ -1,12 +1,12 @@
 package handle
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"path/filepath"
 	"slices"
 	"txnbi-backend/api"
+	"txnbi-backend/errs"
 	"txnbi-backend/internal/biz"
 	"txnbi-backend/pkg/tlog"
 )
@@ -29,7 +29,7 @@ func GenChart(ctx *gin.Context) {
 	var req api.GenChartReq
 	if err := ctx.ShouldBind(&req); err != nil {
 		tlog.L.Debug().Msgf("生成图表失败，原因：%s", err.Error())
-		ctx.JSON(http.StatusOK, api.GenChartResp{StatusCode: 1, Message: err.Error()})
+		ctx.JSON(http.StatusOK, api.GenChartResp{StatusCode: 1, Message: errs.ErrGenerateChartFailed.Error()})
 		return
 	}
 
@@ -38,7 +38,7 @@ func GenChart(ctx *gin.Context) {
 	fileSize := req.File.Size
 	if fileSize < 0 || fileSize > MAX_USER_UPLOAD_FILE_SIZE {
 		tlog.L.Debug().Msgf("生成图表失败，原因：%s，原始数据：文件大小：%d", "文件大小不合法", fileSize)
-		ctx.JSON(http.StatusOK, api.GenChartResp{StatusCode: 1, Message: "文件大小非法！"})
+		ctx.JSON(http.StatusOK, api.GenChartResp{StatusCode: 1, Message: errs.ErrFileSizeInvalid.Error()})
 		return
 	}
 	// 	检查文件后缀格式是否合法
@@ -46,7 +46,7 @@ func GenChart(ctx *gin.Context) {
 	ext := filepath.Ext(fileName)
 	if ext != ".xlsx" && ext != ".xls" && ext != ".csv" {
 		tlog.L.Debug().Msgf("生成图表失败，原因：%s，原始数据：文件名：%s,文件后缀：%s", "文件后缀格式不支持", fileName, ext)
-		ctx.JSON(http.StatusOK, api.GenChartResp{StatusCode: 1, Message: "文件后缀格式不支持！"})
+		ctx.JSON(http.StatusOK, api.GenChartResp{StatusCode: 1, Message: errs.ErrFileExtensionNotSupported.Error()})
 		return
 	}
 
@@ -56,12 +56,12 @@ func GenChart(ctx *gin.Context) {
 	goalLen, chartNameLen := len(goal), len(chartName)
 	if goalLen < 2 || goalLen > 255 {
 		tlog.L.Debug().Msgf("生成图表失败，原因：%s，原始数据：分析目标：%s，分析目标长度：%d", "分析目标字符串长度不合法", goal, goalLen)
-		ctx.JSON(http.StatusOK, api.GenChartResp{StatusCode: 1, Message: "分析目标的字符数应在 2 ~ 255间！"})
+		ctx.JSON(http.StatusOK, api.GenChartResp{StatusCode: 1, Message: errs.ErrGoalCharacterCountOutOfRange.Error()})
 		return
 	}
 	if chartNameLen < 1 || chartNameLen > 127 {
 		tlog.L.Debug().Msgf("生成图表失败，原因：%s，原始数据：表名：%s，表名长度：%d", "表名长度不合法", chartName, chartNameLen)
-		ctx.JSON(http.StatusOK, api.GenChartResp{StatusCode: 1, Message: "表名的字符数应在 2 ~ 128 间！"})
+		ctx.JSON(http.StatusOK, api.GenChartResp{StatusCode: 1, Message: errs.ErrTableNameLengthOutOfRange.Error()})
 		return
 	}
 
@@ -69,14 +69,14 @@ func GenChart(ctx *gin.Context) {
 	allChartSupportType := []string{"折线图", "柱状图", "堆叠图", "饼图", "雷达图"}
 	if !slices.Contains(allChartSupportType, chartType) {
 		tlog.L.Debug().Msgf("生成图表失败，原因：%s，原始数据：图表类型：%s", "图表类型不支持", chartType)
-		ctx.JSON(http.StatusOK, api.GenChartResp{StatusCode: 1, Message: fmt.Sprintf("不支持该图表类型！")})
+		ctx.JSON(http.StatusOK, api.GenChartResp{StatusCode: 1, Message: errs.ErrUnsupportedChartType.Error()})
 		return
 	}
 
 	data, analysis, err := biz.GenChart(ctx, req.ChartName, req.ChartType, req.Goal, req.File, ctx.GetInt64("userID"))
 	if err != nil {
 		tlog.L.Debug().Msgf("生成图表失败，原因：%s，原始数据：%v", err.Error(), req)
-		ctx.JSON(http.StatusOK, api.GenChartResp{StatusCode: 1, Message: err.Error()})
+		ctx.JSON(http.StatusOK, api.GenChartResp{StatusCode: 1, Message: errs.ErrGenerateChartFailed.Error()})
 		return
 	}
 	tlog.L.Debug().Msgf("生成图表成功，原始数据：%s", req)
@@ -97,33 +97,33 @@ func FindMyChart(ctx *gin.Context) {
 	var req api.FindMyChartReq
 	if err := ctx.ShouldBindQuery(&req); err != nil {
 		tlog.L.Debug().Msgf("查找我的图表失败，原因：%s", err.Error())
-		ctx.JSON(http.StatusOK, api.FindMyChartResp{StatusCode: 1, Message: "查找我的图表失败！"})
+		ctx.JSON(http.StatusOK, api.FindMyChartResp{StatusCode: 1, Message: errs.ErrFindMyChartFailed.Error()})
 		return
 	}
 	// 校验参数
 	if req.PageSize < 1 || req.PageSize > 32 {
 		tlog.L.Debug().Msgf("查找我的图表失败，原因：%s，原始数据：页面大小：%d", "页面大小不合法！", req.PageSize)
-		ctx.JSON(http.StatusOK, api.FindMyChartResp{StatusCode: 1, Message: "页面大小不合法！"})
+		ctx.JSON(http.StatusOK, api.FindMyChartResp{StatusCode: 1, Message: errs.ErrInvalidPageSize.Error()})
 		return
 	}
 	chartName := req.ChartName
 	chartNameLen := len(chartName)
 	if chartNameLen < 0 || chartNameLen > 127 {
 		tlog.L.Debug().Msgf("查找我的图表失败，原因：%s,表名：%s，表名长度：%d", "表名长度不合法，", chartName, chartNameLen)
-		ctx.JSON(http.StatusOK, api.FindMyChartResp{StatusCode: 1, Message: "表名的字符数应不大于 127 ！"})
+		ctx.JSON(http.StatusOK, api.FindMyChartResp{StatusCode: 1, Message: errs.ErrTableNameLengthOutOfRange.Error()})
 		return
 	}
 	currentPage := req.CurrentPage
 	if currentPage < 0 {
 		tlog.L.Debug().Msgf("查找我的图表失败，原因：%s,当前页面参数：%d", "当前页面参数不合法", currentPage)
-		ctx.JSON(http.StatusOK, api.FindMyChartResp{StatusCode: 1, Message: "当前页面参数不合法！"})
+		ctx.JSON(http.StatusOK, api.FindMyChartResp{StatusCode: 1, Message: errs.ErrInvalidPageParameters.Error()})
 		return
 	}
 
 	chart, total, err := biz.ListMyChart(ctx, ctx.GetInt64("userID"), req.ChartName, req.CurrentPage, req.PageSize)
 	if err != nil {
 		tlog.L.Debug().Msgf("查找我的图表失败，原因：%s，原始数据：%v", err.Error(), req)
-		ctx.JSON(http.StatusOK, api.FindMyChartResp{StatusCode: 1, Message: "查找图表失败！"})
+		ctx.JSON(http.StatusOK, api.FindMyChartResp{StatusCode: 1, Message: errs.ErrFindMyChartFailed.Error()})
 		return
 	}
 	tlog.L.Debug().Msgf("查找我的图表成功，初始数据：%v", req)
@@ -144,14 +144,14 @@ func DeleteMyChart(ctx *gin.Context) {
 	var req api.DeleteMyChartReq
 	if err := ctx.ShouldBind(&req); err != nil {
 		tlog.L.Debug().Msgf("删除我的图表失败，原因：%s", err.Error())
-		ctx.JSON(http.StatusOK, api.DeleteMyChartResp{StatusCode: 1, Message: err.Error()})
+		ctx.JSON(http.StatusOK, api.DeleteMyChartResp{StatusCode: 1, Message: errs.ErrDeleteMyChartFailed.Error()})
 		return
 	}
 	userID := ctx.GetInt64("userID")
 	err := biz.DeleteMyChart(ctx, req.ChartID, userID)
 	if err != nil {
 		tlog.L.Debug().Msgf("删除我的图表失败，原因：%s,原始数据:%v", err.Error(), req)
-		ctx.JSON(http.StatusOK, api.DeleteMyChartResp{StatusCode: 1, Message: err.Error()})
+		ctx.JSON(http.StatusOK, api.DeleteMyChartResp{StatusCode: 1, Message: errs.ErrDeleteMyChartFailed.Error()})
 		return
 	}
 	tlog.L.Debug().Msgf("删除我的图表成功，原始数据：%v", req)
@@ -172,7 +172,7 @@ func ExampleChart(ctx *gin.Context) {
 	charts, total, err := biz.ExampleChart(ctx)
 	if err != nil {
 		tlog.L.Debug().Msgf("获取示例图表失败，原因：%s", err.Error())
-		ctx.JSON(http.StatusOK, api.ExampleChartResp{StatusCode: 1, Message: err.Error()})
+		ctx.JSON(http.StatusOK, api.ExampleChartResp{StatusCode: 1, Message: errs.ErrGetExampleChartFailed.Error()})
 		return
 	}
 	ctx.JSON(http.StatusOK, api.ExampleChartResp{StatusCode: 0, Message: "查询成功！", Charts: charts, Total: total})
