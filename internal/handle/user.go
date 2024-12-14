@@ -1,11 +1,11 @@
 package handle
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"txnbi-backend/api"
 	"txnbi-backend/internal/biz"
+	"txnbi-backend/pkg/tlog"
 )
 
 // UserLogin godoc
@@ -20,17 +20,31 @@ import (
 func UserLogin(ctx *gin.Context) {
 	var req api.UserLoginReq
 	if err := ctx.ShouldBind(&req); err != nil {
-		fmt.Println(err)
+		tlog.L.Debug().Msgf("用户登陆失败，原因: %s,原始数据: 输入的账号: %s 输入的密码: %s", err.Error(), req.Account, req.Password)
 		ctx.JSON(http.StatusOK, api.UserLoginResp{StatusCode: 1, Message: "参数不合法！"})
+		return
+	}
+
+	// 校验参数
+	accountLen, passwordLen := len(req.Account), len(req.Password)
+	if accountLen < 6 || accountLen > 16 {
+		tlog.L.Debug().Msgf("用户登陆失败，原因: %s,输入的账号: %s 输入的密码: %s", "输入的账号长度不合法", req.Account, req.Password)
+		ctx.JSON(http.StatusOK, api.UserLoginResp{StatusCode: 1, Message: "用户名长度超出要求范围，长度应在6 ~ 16位"})
+		return
+	}
+	if passwordLen < 8 || passwordLen > 24 {
+		tlog.L.Debug().Msgf("用户登陆失败，: %s,输入的账号: %s 输入的密码: %s", "输入的密码长度不合法", req.Account, req.Password)
+		ctx.JSON(http.StatusOK, api.UserLoginResp{StatusCode: 1, Message: "密码长度超出要求范围，长度应在8 ~ 24位"})
 		return
 	}
 
 	token, err := biz.UserLogin(req.Account, req.Password)
 	if err != nil {
-		fmt.Println(err)
+		tlog.L.Debug().Msgf("用户登陆失败，: %s,输入的账号: %s 输入的密码: %s", err.Error(), req.Account, req.Password)
 		ctx.JSON(http.StatusOK, api.UserLoginResp{StatusCode: 1, Message: err.Error()})
 		return
 	}
+	tlog.L.Debug().Msgf("用户登陆成功，输入的账号: %s 输入的密码: %s", req.Account, req.Password)
 	ctx.JSON(http.StatusOK, api.UserLoginResp{StatusCode: 0, Message: "登陆成功", Token: token})
 }
 
