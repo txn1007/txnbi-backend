@@ -105,14 +105,26 @@ func UserRegister(ctx *gin.Context) {
 func CurrentUserDetail(ctx *gin.Context) {
 	var req api.CurrentUserDetailReq
 	if err := ctx.ShouldBind(&req); err != nil {
-		ctx.JSON(http.StatusOK, api.UserRegisterResp{StatusCode: 1, Message: err.Error()})
+		tlog.L.Debug().Msgf("获取当前用户详细信息失败，原因：%s", err.Error())
+		ctx.JSON(http.StatusOK, api.UserRegisterResp{StatusCode: 1, Message: "获取当前用户详细信息失败！"})
 		return
 	}
-	user, err := biz.CurrentUserDetail(ctx.GetInt64("userID"))
+	userID := ctx.GetInt64("userID")
+	// 校验参数
+	if userID <= 0 {
+		tlog.L.Debug().Msgf("获取当前用户详细信息失败，原因：%s,原始数据: userID = %d ", "userID不合法", userID)
+		ctx.JSON(http.StatusOK, api.UserLoginOutResp{StatusCode: 1, Message: "获取当前用户详细信息失败！"})
+		return
+	}
+
+	user, err := biz.CurrentUserDetail(userID)
 	if err != nil {
-		ctx.JSON(http.StatusOK, api.UserRegisterResp{StatusCode: 1, Message: err.Error()})
+		tlog.L.Debug().Msgf("获取当前用户详细信息失败，原因：%s,原始数据: userID = %d ", err.Error(), userID)
+		ctx.JSON(http.StatusOK, api.UserRegisterResp{StatusCode: 1, Message: "获取当前用户详细信息失败"})
 		return
 	}
+	// 成功
+	tlog.L.Debug().Msgf("获取当前用户详细信息成功，原始数据: userID = %d ", userID)
 	ctx.JSON(http.StatusOK, api.CurrentUserDetailResp{StatusCode: 0, Message: "获取用户本人信息成功！", UserInfoV0: api.UserInfoV0{
 		ID: user.ID, UserAccount: user.UserAccount, UserName: user.UserName, UserAvatar: user.UserAvatar,
 		UserRole: user.UserRole, CreateTime: user.CreateTime, UpdateTime: user.UpdateTime,
@@ -132,11 +144,20 @@ func CurrentUserDetail(ctx *gin.Context) {
 //	@Router			/user/loginOut [post]
 func UserLoginOut(ctx *gin.Context) {
 	userID := ctx.GetInt64("userID")
-	err := biz.UserLoginOut(userID)
-	if err != nil {
-		ctx.JSON(http.StatusOK, api.UserLoginOutResp{StatusCode: 1, Message: err.Error()})
+	// 校验参数
+	if userID <= 0 {
+		tlog.L.Debug().Msgf("用户登出失败，原因：%s,原始数据: userID = %d ", "userID不合法", userID)
+		ctx.JSON(http.StatusOK, api.UserLoginOutResp{StatusCode: 1, Message: "退出登陆失败！"})
 		return
 	}
+
+	err := biz.UserLoginOut(userID)
+	if err != nil {
+		tlog.L.Debug().Msgf("用户登出失败，原因：%s,原始数据: userID = %d ", err.Error(), userID)
+		ctx.JSON(http.StatusOK, api.UserLoginOutResp{StatusCode: 1, Message: "退出登陆失败！"})
+		return
+	}
+	tlog.L.Debug().Msgf("用户登出成功，原始数据: userID = %d ", userID)
 	ctx.JSON(http.StatusOK, api.UserLoginOutResp{StatusCode: 0, Message: "退出登陆成功！"})
 	return
 }
