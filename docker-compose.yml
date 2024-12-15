@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: "123456aa"
+      MYSQL_DATABASE: "txnbi"
+      MYSQL_USER: "root"
+      MYSQL_PASSWORD: "123456aa"
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  redis:
+    image: redis:7.0
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: ["redis-server", "--appendonly", "yes"，"--requirepass", "123456aa"]
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"      # RabbitMQ 主端口
+      - "15672:15672"    # RabbitMQ 管理控制台端口
+    environment:
+      RABBITMQ_DEFAULT_USER: your_rabbitmq_user
+      RABBITMQ_DEFAULT_PASS: your_rabbitmq_password
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+volumes:
+  mysql_data:
+    driver: local
+  redis_data:
+    driver: local
+  rabbitmq_data:
+    driver: local
