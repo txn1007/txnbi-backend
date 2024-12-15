@@ -1,28 +1,28 @@
 package tlog
 
-import "C"
 import (
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+	"gopkg.in/natefinch/lumberjack.v2"
 	"os"
 	"time"
 )
 
-var L zerolog.Logger
-var logFile *os.File
+var logger *lumberjack.Logger
 
 func init() {
-	// 将日志写入本地文件和标准错误输出
-	f, err := os.OpenFile("app.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
-	if err != nil {
-		panic(err)
+	logger = &lumberjack.Logger{
+		Filename:   "app.log", // 日志文件名
+		MaxSize:    100,       // 每个日志文件的最大大小（MB）
+		MaxBackups: 5,         // 保留的最大备份数
+		MaxAge:     7 * 5,     // 保留日志的最大天数（两周）
+		Compress:   true,      // 是否压缩旧日志文件
 	}
-	logFile = f
-	r := zerolog.MultiLevelWriter(logFile, os.Stderr)
+	r := zerolog.MultiLevelWriter(logger, os.Stderr)
 
 	zerolog.TimeFieldFormat = time.RFC3339
-	L = zerolog.New(r).With().Timestamp().Caller().Logger()
-	log.Logger = L
+	l := zerolog.New(r).With().Timestamp().Caller().Logger()
+	log.Logger = l
 
 	//// todo 优化输出结构
 	//r := zerolog.ConsoleWriter{
@@ -40,5 +40,5 @@ func init() {
 }
 
 func CloseLogFile() error {
-	return logFile.Close()
+	return logger.Close()
 }

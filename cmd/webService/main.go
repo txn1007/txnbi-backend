@@ -37,7 +37,6 @@ func main() {
 			log.Fatal().Err(err).Msg("服务器启动失败")
 		}
 	}()
-
 	// 关闭服务器
 	// 监听信号，当收到信号后进行关停
 	quit := make(chan os.Signal, 1)

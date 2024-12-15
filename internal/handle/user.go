@@ -2,11 +2,11 @@ package handle
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/rs/zerolog/log"
 	"net/http"
 	"txnbi-backend/api"
 	"txnbi-backend/errs"
 	"txnbi-backend/internal/biz"
-	"txnbi-backend/pkg/tlog"
 )
 
 // UserLogin godoc
@@ -21,7 +21,7 @@ import (
 func UserLogin(ctx *gin.Context) {
 	var req api.UserLoginReq
 	if err := ctx.ShouldBind(&req); err != nil {
-		tlog.L.Debug().Msgf("用户登陆失败，原因: %s,原始数据: 输入的账号: %s 输入的密码: %s", err.Error(), req.Account, req.Password)
+		log.Info().Err(err).Interface("req", req).Msg("")
 		ctx.JSON(http.StatusOK, api.UserLoginResp{StatusCode: 1, Message: errs.ErrInvalidInputParameters.Error()})
 		return
 	}
@@ -29,23 +29,23 @@ func UserLogin(ctx *gin.Context) {
 	// 校验参数
 	accountLen, passwordLen := len(req.Account), len(req.Password)
 	if accountLen < 6 || accountLen > 16 {
-		tlog.L.Debug().Msgf("用户登陆失败，原因: %s,输入的账号: %s 输入的密码: %s", "输入的账号长度不合法", req.Account, req.Password)
+		log.Info().Err(errs.ErrUsernameLengthOutOfRange).Interface("req", req).Msg("")
 		ctx.JSON(http.StatusOK, api.UserLoginResp{StatusCode: 1, Message: errs.ErrUsernameLengthOutOfRange.Error()})
 		return
 	}
 	if passwordLen < 8 || passwordLen > 24 {
-		tlog.L.Debug().Msgf("用户登陆失败，: %s,输入的账号: %s 输入的密码: %s", "输入的密码长度不合法", req.Account, req.Password)
+		log.Info().Err(errs.ErrPasswordLengthOutOfRange).Interface("req", req).Msg("")
 		ctx.JSON(http.StatusOK, api.UserLoginResp{StatusCode: 1, Message: errs.ErrPasswordLengthOutOfRange.Error()})
 		return
 	}
 
 	token, err := biz.UserLogin(req.Account, req.Password)
 	if err != nil {
-		tlog.L.Debug().Msgf("用户登陆失败，: %s,输入的账号: %s 输入的密码: %s", err.Error(), req.Account, req.Password)
+		log.Info().Err(err).Interface("req", req).Msg("")
 		ctx.JSON(http.StatusOK, api.UserLoginResp{StatusCode: 1, Message: errs.ErrUserLoginFailed.Error()})
 		return
 	}
-	tlog.L.Debug().Msgf("用户登陆成功，输入的账号: %s 输入的密码: %s", req.Account, req.Password)
+	log.Info().Interface("req", req).Msg("登陆成功")
 	ctx.JSON(http.StatusOK, api.UserLoginResp{StatusCode: 0, Message: "登陆成功", Token: token})
 }
 
@@ -61,7 +61,7 @@ func UserLogin(ctx *gin.Context) {
 func UserRegister(ctx *gin.Context) {
 	var req api.UserRegisterReq
 	if err := ctx.ShouldBind(&req); err != nil {
-		tlog.L.Debug().Msgf("用户注册失败，原因: %s,原始数据: 输入的账号: %s 输入的密码: %s, 输入的邀请码: %s", err.Error(), req.Account, req.Password, req.InviteCode)
+		log.Info().Err(err).Interface("req", req).Msg("")
 		ctx.JSON(http.StatusOK, api.UserRegisterResp{StatusCode: 1, Message: errs.ErrUserRegistrationFailed.Error()})
 		return
 	}
@@ -69,28 +69,29 @@ func UserRegister(ctx *gin.Context) {
 	// 校验参数
 	accountLen, passwordLen, inviteCodeLen := len(req.Account), len(req.Password), len(req.InviteCode)
 	if accountLen < 6 || accountLen > 16 {
-		tlog.L.Debug().Msgf("用户注册失败，原因: %s,输入的账号: %s 输入的密码: %s, 输入的邀请码: %s", "输入的账号长度不合法", req.Account, req.Password, req.InviteCode)
+		log.Info().Err(errs.ErrUsernameLengthOutOfRange).Interface("req", req).Msg("")
 		ctx.JSON(http.StatusOK, api.UserLoginResp{StatusCode: 1, Message: errs.ErrUsernameLengthOutOfRange.Error()})
 		return
 	}
 	if passwordLen < 8 || passwordLen > 24 {
-		tlog.L.Debug().Msgf("用户注册失败，: %s,输入的账号: %s 输入的密码: %s, 输入的邀请码: %s", "输入的密码长度不合法", req.Account, req.Password, req.InviteCode)
+		log.Info().Err(errs.ErrPasswordLengthOutOfRange).Interface("req", req).Msg("")
 		ctx.JSON(http.StatusOK, api.UserLoginResp{StatusCode: 1, Message: errs.ErrPasswordLengthOutOfRange.Error()})
 		return
 	}
 	if inviteCodeLen < 2 || inviteCodeLen > 16 {
-		tlog.L.Debug().Msgf("用户注册失败，: %s,输入的账号: %s 输入的密码: %s, 输入的邀请码: %s", "输入的邀请码长度不合法", req.Account, req.Password, req.InviteCode)
+		log.Info().Err(errs.ErrInviteCodeLengthOutOfRange).Interface("req", req).Msg("")
 		ctx.JSON(http.StatusOK, api.UserLoginResp{StatusCode: 1, Message: errs.ErrInviteCodeLengthOutOfRange.Error()})
 		return
 	}
 
 	err := biz.UserRegister(ctx, req.Account, req.Password, req.InviteCode)
 	if err != nil {
-		tlog.L.Debug().Msgf("用户注册失败，原因: %s,原始数据: 输入的账号: %s 输入的密码: %s,输入的邀请码: %s", err.Error(), req.Account, req.Password, req.InviteCode)
+		log.Info().Err(err).Interface("req", req).Msg("")
 		ctx.JSON(http.StatusOK, api.UserRegisterResp{StatusCode: 1, Message: errs.ErrUserRegistrationFailed.Error()})
 		return
 	}
-	tlog.L.Debug().Msgf("用户注册成功，原始数据: 输入的账号: %s 输入的密码: %s ,输入的邀请码: %s", req.Account, req.Password, req.InviteCode)
+
+	log.Info().Interface("req", req).Msg("登陆成功")
 	ctx.JSON(http.StatusOK, api.UserRegisterResp{StatusCode: 0, Message: "注册成功！"})
 }
 
@@ -106,7 +107,7 @@ func UserRegister(ctx *gin.Context) {
 func CurrentUserDetail(ctx *gin.Context) {
 	var req api.CurrentUserDetailReq
 	if err := ctx.ShouldBind(&req); err != nil {
-		tlog.L.Debug().Msgf("获取当前用户详细信息失败，原因：%s", err.Error())
+		log.Info().Err(err).Interface("req", req).Msg("")
 		ctx.JSON(http.StatusOK, api.UserRegisterResp{StatusCode: 1, Message: errs.ErrGetCurrentUserDetailsFailed.Error()})
 		return
 	}
@@ -115,12 +116,12 @@ func CurrentUserDetail(ctx *gin.Context) {
 
 	user, err := biz.CurrentUserDetail(userID)
 	if err != nil {
-		tlog.L.Debug().Msgf("获取当前用户详细信息失败，原因：%s,原始数据: userID = %d ", err.Error(), userID)
+		log.Info().Err(err).Interface("req", req).Msg("")
 		ctx.JSON(http.StatusOK, api.UserRegisterResp{StatusCode: 1, Message: errs.ErrGetCurrentUserDetailsFailed.Error()})
 		return
 	}
 	// 成功
-	tlog.L.Debug().Msgf("获取当前用户详细信息成功，原始数据: userID = %d ", userID)
+	log.Info().Interface("req", req).Msg("用户获取自身信息成功")
 	ctx.JSON(http.StatusOK, api.CurrentUserDetailResp{StatusCode: 0, Message: "获取用户本人信息成功！", UserInfoV0: api.UserInfoV0{
 		ID: user.ID, UserAccount: user.UserAccount, UserName: user.UserName, UserAvatar: user.UserAvatar,
 		UserRole: user.UserRole, CreateTime: user.CreateTime, UpdateTime: user.UpdateTime,
@@ -142,11 +143,11 @@ func UserLoginOut(ctx *gin.Context) {
 	userID := ctx.GetInt64("userID")
 	err := biz.UserLoginOut(userID)
 	if err != nil {
-		tlog.L.Debug().Msgf("用户登出失败，原因：%s,原始数据: userID = %d ", err.Error(), userID)
+		log.Info().Err(err).Int64("req", userID).Msg("")
 		ctx.JSON(http.StatusOK, api.UserLoginOutResp{StatusCode: 1, Message: errs.ErrLogoutFailed.Error()})
 		return
 	}
-	tlog.L.Debug().Msgf("用户登出成功，原始数据: userID = %d ", userID)
+	log.Info().Int64("userID", userID).Msg("用户登陆成功")
 	ctx.JSON(http.StatusOK, api.UserLoginOutResp{StatusCode: 0, Message: "退出登陆成功！"})
 	return
 }
