@@ -72,6 +72,15 @@ definitions:
       statusCode:
         type: integer
     type: object
+  api.ShareChartResp:
+    properties:
+      accessCode:
+        type: string
+      message:
+        type: string
+      statusCode:
+        type: integer
+    type: object
   api.UpdateChartResp:
     properties:
       message:
@@ -248,6 +257,28 @@ paths:
           schema:
             $ref: '#/definitions/api.DeleteMyChartResp'
       summary: 删除图表数据接口
+      tags:
+      - chart
+  /chart/auth/share:
+    post:
+      description: 用户生成分享自己的图表邀请码接口
+      parameters:
+      - in: formData
+        name: chartID
+        required: true
+        type: integer
+      - in: formData
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.ShareChartResp'
+      summary: 用户生成分享自己的图表邀请码接口
       tags:
       - chart
   /chart/auth/update:

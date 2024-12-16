@@ -40,6 +40,7 @@ func Route() *gin.Engine {
 			authGroup.POST("/myChartDel", handle.DeleteMyChart)
 			authGroup.GET("/findMyChart", handle.FindMyChart)
 			authGroup.POST("/update", handle.UpdateChart)
+			authGroup.POST("/share", handle.ShareChart)
 		}
 
 	}

@@ -204,6 +204,35 @@ func UpdateChart(ctx *gin.Context) {
 		return
 	}
 
+	log.Info().Interface("req", req).Msg("")
 	ctx.JSON(http.StatusOK, api.UpdateChartResp{StatusCode: 0, Message: "更新图表成功！"})
+	return
+}
+
+// ShareChart godoc
+//
+//	@Summary		用户生成分享自己的图表邀请码接口
+//	@Description	用户生成分享自己的图表邀请码接口
+//	@Tags			chart
+//	@Produce		json
+//	@Param			Info	formData	api.ShareChartReq	true	"信息"
+//	@Success		200		{object}	api.ShareChartResp
+//	@Router			/chart/auth/share [post]
+func ShareChart(ctx *gin.Context) {
+	var req api.ShareChartReq
+	if err := ctx.ShouldBind(&req); err != nil {
+		log.Info().Err(err).Interface("req", req).Msg("")
+		ctx.JSON(http.StatusOK, api.UpdateChartResp{StatusCode: 1, Message: errs.ErrInvalidInputParameters.Error()})
+		return
+	}
+	userID := ctx.GetInt64("userID")
+	accessCode, err := biz.ShareChart(ctx, req.ChartID, userID, req.Token)
+	if err != nil {
+		log.Info().Err(err).Interface("req", req).Msg("")
+		ctx.JSON(http.StatusOK, api.ShareChartResp{StatusCode: 1, Message: errs.ErrShareChartFailed.Error()})
+		return
+	}
+	log.Info().Interface("req", req).Msg("")
+	ctx.JSON(http.StatusOK, api.ShareChartResp{StatusCode: 0, Message: "生成分享链接成功！", AccessCode: accessCode})
 	return
 }

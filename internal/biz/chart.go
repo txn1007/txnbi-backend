@@ -11,10 +11,12 @@ import (
 	"mime/multipart"
 	"time"
 	"txnbi-backend/api"
+	"txnbi-backend/conf"
 	"txnbi-backend/errs"
 	"txnbi-backend/internal/model"
 	"txnbi-backend/internal/store"
 	"txnbi-backend/pkg/doubao"
+	"txnbi-backend/pkg/jwt"
 )
 
 func GenChart(ctx context.Context, chartName, chartType, goal string, data *multipart.FileHeader, userID int64) (chartData, analysis string, err error) {
@@ -149,4 +151,26 @@ func UpdateChart(ctx context.Context, chartID, userID int64, chartName, goal, ge
 	}
 
 	return nil
+}
+
+func ShareChart(ctx context.Context, chartID, userID int64, userToken string) (accessCode string, err error) {
+	chart, err := store.GetChartByID(ctx, chartID)
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return "", errs.ErrFindNotExistChart
+	}
+	if err != nil {
+		return "", err
+	}
+
+	// 检查表是否属于用户
+	if chart.UserID != userID {
+		return "", errs.ErrOperateOtherUserChart
+	}
+
+	// 生成短期 token 用作 accessCode 以访问图表。当用户token过期时，accessCode 失效
+	accessCode, err = jwt.SignForChartAccessCode(userID, chartID, userToken, conf.JWTCfg.SignKey)
+	if err != nil {
+		return "", err
+	}
+	return accessCode, nil
 }

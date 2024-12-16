@@ -152,6 +152,40 @@ const docTemplate = `{
                 }
             }
         },
+        "/chart/auth/share": {
+            "post": {
+                "description": "用户生成分享自己的图表邀请码接口",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "chart"
+                ],
+                "summary": "用户生成分享自己的图表邀请码接口",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "name": "chartID",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "name": "token",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.ShareChartResp"
+                        }
+                    }
+                }
+            }
+        },
         "/chart/auth/update": {
             "post": {
                 "description": "用户修改自己的图表数据接口",
@@ -442,6 +476,20 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "genResult": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "statusCode": {
+                    "type": "integer"
+                }
+            }
+        },
+        "api.ShareChartResp": {
+            "type": "object",
+            "properties": {
+                "accessCode": {
                     "type": "string"
                 },
                 "message": {

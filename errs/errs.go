@@ -25,4 +25,5 @@ var (
 	ErrOperateOtherUserChart        = errors.New("不允许操作其他人的图表！")
 	ErrFindNotExistChart            = errors.New("图表不存在！")
 	ErrUpdateChartFailed            = errors.New("修改图表失败！")
+	ErrShareChartFailed             = errors.New("生成分享图表链接失败！")
 )

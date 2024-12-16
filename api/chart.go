@@ -81,3 +81,16 @@ type UpdateChartResp struct {
 	StatusCode int    `json:"statusCode" form:"statusCode"`
 	Message    string `json:"message" form:"message"`
 }
+
+type ShareChartReq struct {
+	Token string `json:"token" query:"token" form:"token" binding:"required"`
+
+	ChartID int64 `json:"chartID" query:"chartID" form:"chartID" binding:"required"`
+}
+
+type ShareChartResp struct {
+	StatusCode int    `json:"statusCode" form:"statusCode"`
+	Message    string `json:"message" form:"message"`
+
+	AccessCode string `json:"accessCode" form:"accessCode"`
+}
