@@ -39,6 +39,7 @@ func Route() *gin.Engine {
 			authGroup.POST("/gen", myLimiter.New("chart-gen", myLimiter.VeryHighLevel), handle.GenChart)
 			authGroup.POST("/myChartDel", handle.DeleteMyChart)
 			authGroup.GET("/findMyChart", handle.FindMyChart)
+			authGroup.POST("/update", handle.UpdateChart)
 		}
 
 	}

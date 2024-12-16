@@ -72,6 +72,13 @@ definitions:
       statusCode:
         type: integer
     type: object
+  api.UpdateChartResp:
+    properties:
+      message:
+        type: string
+      statusCode:
+        type: integer
+    type: object
   api.UserInfoV0:
     properties:
       createTime:
@@ -241,6 +248,38 @@ paths:
           schema:
             $ref: '#/definitions/api.DeleteMyChartResp'
       summary: 删除图表数据接口
+      tags:
+      - chart
+  /chart/auth/update:
+    post:
+      description: 用户修改自己的图表数据接口
+      parameters:
+      - in: formData
+        name: chartGoal
+        type: string
+      - in: formData
+        name: chartID
+        required: true
+        type: integer
+      - in: formData
+        name: chartName
+        required: true
+        type: string
+      - in: formData
+        name: genResult
+        type: string
+      - in: formData
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.UpdateChartResp'
+      summary: 用户修改自己的图表数据接口
       tags:
       - chart
   /chart/exampleChart:

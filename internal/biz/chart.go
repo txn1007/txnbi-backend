@@ -11,6 +11,7 @@ import (
 	"mime/multipart"
 	"time"
 	"txnbi-backend/api"
+	"txnbi-backend/errs"
 	"txnbi-backend/internal/model"
 	"txnbi-backend/internal/store"
 	"txnbi-backend/pkg/doubao"
@@ -121,4 +122,31 @@ func ExampleChart(ctx context.Context) ([]api.ChartInfoV0, int64, error) {
 
 	//// 获取本地硬编码的示例数据
 	//return store.GetExampleChartByLocal(ctx)
+}
+
+func UpdateChart(ctx context.Context, chartID, userID int64, chartName, goal, genResult string) error {
+	chart, err := store.GetChartByID(ctx, chartID)
+	// 要修改的表不存在
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return errs.ErrFindNotExistChart
+	}
+	// 未知错误
+	if err != nil {
+		return err
+	}
+	// 比较请求修改的表是否属于该用户
+	if chart.UserID != userID {
+		return errs.ErrOperateOtherUserChart
+	}
+
+	// 修改记录
+	chart.Name = chartName
+	chart.Goal = goal
+	chart.GenResult = genResult
+	err = store.UpdateChart(ctx, chart)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

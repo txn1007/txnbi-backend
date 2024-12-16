@@ -22,4 +22,7 @@ var (
 	ErrDeleteMyChartFailed          = errors.New("删除我的图表失败！")
 	ErrGenerateChartFailed          = errors.New("生成图表失败！")
 	ErrGetExampleChartFailed        = errors.New("获取示例图表失败！")
+	ErrOperateOtherUserChart        = errors.New("不允许操作其他人的图表！")
+	ErrFindNotExistChart            = errors.New("图表不存在！")
+	ErrUpdateChartFailed            = errors.New("修改图表失败！")
 )

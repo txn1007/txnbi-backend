@@ -178,3 +178,32 @@ func ExampleChart(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, api.ExampleChartResp{StatusCode: 0, Message: "查询成功！", Charts: charts, Total: total})
 	return
 }
+
+// UpdateChart godoc
+//
+//	@Summary		用户修改自己的图表数据接口
+//	@Description	用户修改自己的图表数据接口
+//	@Tags			chart
+//	@Produce		json
+//	@Param			Info	formData	api.UpdateChartReq	true	"信息"
+//	@Success		200		{object}	api.UpdateChartResp
+//	@Router			/chart/auth/update [post]
+func UpdateChart(ctx *gin.Context) {
+	var req api.UpdateChartReq
+	if err := ctx.ShouldBind(&req); err != nil {
+		log.Info().Err(err).Interface("req", req).Msg("")
+		ctx.JSON(http.StatusOK, api.UpdateChartResp{StatusCode: 1, Message: errs.ErrInvalidInputParameters.Error()})
+		return
+	}
+
+	userID := ctx.GetInt64("userID")
+	err := biz.UpdateChart(ctx, req.ChartID, userID, req.ChartName, req.ChartGoal, req.GenResult)
+	if err != nil {
+		log.Info().Err(err).Interface("req", req).Msg("")
+		ctx.JSON(http.StatusOK, api.UpdateChartResp{StatusCode: 1, Message: errs.ErrUpdateChartFailed.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, api.UpdateChartResp{StatusCode: 0, Message: "更新图表成功！"})
+	return
+}

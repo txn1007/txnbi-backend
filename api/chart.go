@@ -67,3 +67,17 @@ type ExampleChartResp struct {
 	Total  int64         `json:"total" form:"total"`
 	Charts []ChartInfoV0 `json:"charts"`
 }
+
+type UpdateChartReq struct {
+	Token string `json:"token" query:"token" form:"token" binding:"required"`
+
+	ChartID   int64  `json:"chartID" query:"chartID" form:"chartID" binding:"required"`
+	ChartName string `json:"chartName" form:"chartName" binding:"required"`
+	ChartGoal string `json:"chartGoal" form:"chartGoal"`
+	GenResult string `json:"genResult" form:"genResult"`
+}
+
+type UpdateChartResp struct {
+	StatusCode int    `json:"statusCode" form:"statusCode"`
+	Message    string `json:"message" form:"message"`
+}

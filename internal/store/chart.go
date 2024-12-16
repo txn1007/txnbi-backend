@@ -258,3 +258,7 @@ func GetExampleChartByRedis(ctx context.Context) (apiCharts []api.ChartInfoV0, t
 func GetExampleChartByLocal(ctx context.Context) (charts []api.ChartInfoV0, total int64, err error) {
 	return ExampleChart, int64(len(ExampleChart)), nil
 }
+
+func UpdateChart(ctx context.Context, chart *model.Chart) error {
+	return DB.Updates(chart).Error
+}
