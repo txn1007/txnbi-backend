@@ -239,14 +239,18 @@ paths:
       - chart
   /chart/auth/myChartDel:
     post:
+      consumes:
+      - multipart/form-data
       description: 删除图表数据接口
       parameters:
-      - in: formData
-        name: chartID
-        required: true
-        type: integer
-      - in: formData
+      - description: 用户token
+        in: formData
         name: token
+        required: true
+        type: string
+      - description: userID
+        in: formData
+        name: userID
         required: true
         type: string
       produces:
@@ -261,14 +265,18 @@ paths:
       - chart
   /chart/auth/share:
     post:
+      consumes:
+      - multipart/form-data
       description: 用户生成分享自己的图表邀请码接口
       parameters:
-      - in: formData
-        name: chartID
-        required: true
-        type: integer
-      - in: formData
+      - description: 用户token
+        in: formData
         name: token
+        required: true
+        type: string
+      - description: 图表ID
+        in: formData
+        name: chartID
         required: true
         type: string
       produces:
@@ -283,24 +291,33 @@ paths:
       - chart
   /chart/auth/update:
     post:
+      consumes:
+      - multipart/form-data
       description: 用户修改自己的图表数据接口
       parameters:
-      - in: formData
-        name: chartGoal
+      - description: 用户token
+        in: formData
+        name: token
+        required: true
         type: string
-      - in: formData
+      - description: 图表ID
+        in: formData
         name: chartID
         required: true
-        type: integer
-      - in: formData
+        type: string
+      - description: 图表名
+        in: formData
         name: chartName
         required: true
         type: string
-      - in: formData
-        name: genResult
+      - description: 分析目标
+        in: formData
+        name: chartGoal
+        required: true
         type: string
-      - in: formData
-        name: token
+      - description: 分析结果
+        in: formData
+        name: genResult
         required: true
         type: string
       produces:

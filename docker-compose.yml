@@ -8,8 +8,6 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: "123456aa"
       MYSQL_DATABASE: "txnbi"
-      MYSQL_USER: "root"
-      MYSQL_PASSWORD: "123456aa"
     ports:
       - "3306:3306"
     volumes:

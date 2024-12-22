@@ -121,6 +121,9 @@ const docTemplate = `{
         "/chart/auth/myChartDel": {
             "post": {
                 "description": "删除图表数据接口",
+                "consumes": [
+                    "multipart/form-data"
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -130,14 +133,16 @@ const docTemplate = `{
                 "summary": "删除图表数据接口",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "name": "chartID",
+                        "type": "string",
+                        "description": "用户token",
+                        "name": "token",
                         "in": "formData",
                         "required": true
                     },
                     {
                         "type": "string",
-                        "name": "token",
+                        "description": "userID",
+                        "name": "userID",
                         "in": "formData",
                         "required": true
                     }
@@ -155,6 +160,9 @@ const docTemplate = `{
         "/chart/auth/share": {
             "post": {
                 "description": "用户生成分享自己的图表邀请码接口",
+                "consumes": [
+                    "multipart/form-data"
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -164,14 +172,16 @@ const docTemplate = `{
                 "summary": "用户生成分享自己的图表邀请码接口",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "name": "chartID",
+                        "type": "string",
+                        "description": "用户token",
+                        "name": "token",
                         "in": "formData",
                         "required": true
                     },
                     {
                         "type": "string",
-                        "name": "token",
+                        "description": "图表ID",
+                        "name": "chartID",
                         "in": "formData",
                         "required": true
                     }
@@ -189,6 +199,9 @@ const docTemplate = `{
         "/chart/auth/update": {
             "post": {
                 "description": "用户修改自己的图表数据接口",
+                "consumes": [
+                    "multipart/form-data"
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -199,29 +212,36 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "name": "chartGoal",
-                        "in": "formData"
+                        "description": "用户token",
+                        "name": "token",
+                        "in": "formData",
+                        "required": true
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
+                        "description": "图表ID",
                         "name": "chartID",
                         "in": "formData",
                         "required": true
                     },
                     {
                         "type": "string",
+                        "description": "图表名",
                         "name": "chartName",
                         "in": "formData",
                         "required": true
                     },
                     {
                         "type": "string",
-                        "name": "genResult",
-                        "in": "formData"
+                        "description": "分析目标",
+                        "name": "chartGoal",
+                        "in": "formData",
+                        "required": true
                     },
                     {
                         "type": "string",
-                        "name": "token",
+                        "description": "分析结果",
+                        "name": "genResult",
                         "in": "formData",
                         "required": true
                     }

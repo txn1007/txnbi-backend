@@ -137,7 +137,9 @@ func FindMyChart(ctx *gin.Context) {
 //	@Description	删除图表数据接口
 //	@Tags			chart
 //	@Produce		json
-//	@Param			Info	formData	api.DeleteMyChartReq	true	"查询信息"
+//	@Accept			multipart/form-data
+//	@Param			token	formData	string	true	"用户token"
+//	@Param			userID	formData	string	true	"userID"
 //	@Success		200		{object}	api.DeleteMyChartResp
 //	@Router			/chart/auth/myChartDel [post]
 func DeleteMyChart(ctx *gin.Context) {
@@ -185,8 +187,13 @@ func ExampleChart(ctx *gin.Context) {
 //	@Description	用户修改自己的图表数据接口
 //	@Tags			chart
 //	@Produce		json
-//	@Param			Info	formData	api.UpdateChartReq	true	"信息"
-//	@Success		200		{object}	api.UpdateChartResp
+//	@Accept			multipart/form-data
+//	@Param			token		formData	string	true	"用户token"
+//	@Param			chartID		formData	string	true	"图表ID"
+//	@Param			chartName	formData	string	true	"图表名"
+//	@Param			chartGoal	formData	string	true	"分析目标"
+//	@Param			genResult	formData	string	true	"分析结果"
+//	@Success		200			{object}	api.UpdateChartResp
 //	@Router			/chart/auth/update [post]
 func UpdateChart(ctx *gin.Context) {
 	var req api.UpdateChartReq
@@ -215,7 +222,9 @@ func UpdateChart(ctx *gin.Context) {
 //	@Description	用户生成分享自己的图表邀请码接口
 //	@Tags			chart
 //	@Produce		json
-//	@Param			Info	formData	api.ShareChartReq	true	"信息"
+//	@Accept			multipart/form-data
+//	@Param			token	formData	string	true	"用户token"
+//	@Param			chartID	formData	string	true	"图表ID"
 //	@Success		200		{object}	api.ShareChartResp
 //	@Router			/chart/auth/share [post]
 func ShareChart(ctx *gin.Context) {
