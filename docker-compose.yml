@@ -23,7 +23,7 @@ services:
       - "6379:6379"
     volumes:
       - redis_data:/data
-    command: ["redis-server", "--appendonly", "yes"，"--requirepass", "123456aa"]
+    command: ["redis-server", "--appendonly", "yes","--requirepass", "123456aa"]
 
   rabbitmq:
     image: rabbitmq:3-management
