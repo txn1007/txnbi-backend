@@ -5,13 +5,14 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/redis/go-redis/v9"
 	"regexp"
 	"strings"
 	"time"
 	"txnbi-backend/api"
 	"txnbi-backend/internal/model"
 	"txnbi-backend/internal/store/myRedis"
+
+	"github.com/redis/go-redis/v9"
 )
 
 func CreateChart(ctx context.Context, chart model.Chart) error {
@@ -243,7 +244,7 @@ func GetExampleChartByRedis(ctx context.Context) (apiCharts []api.ChartInfoV0, t
 	apiCharts = make([]api.ChartInfoV0, len(charts))
 	for i, chart := range charts {
 		apiCharts[i] = api.ChartInfoV0{
-			ChartID:     chart.ID,
+			ChartID:     int64(chart.ID),
 			ChartType:   chart.ChartType,
 			ChartGoal:   chart.Goal,
 			ChartName:   chart.Name,

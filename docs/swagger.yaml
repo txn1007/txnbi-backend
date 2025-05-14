@@ -1,5 +1,263 @@
 basePath: /
 definitions:
+  api.AdminBatchDeleteLogReq:
+    properties:
+      logIds:
+        items:
+          type: integer
+        minItems: 1
+        type: array
+    required:
+    - logIds
+    type: object
+  api.AdminBatchDeleteLogResp:
+    properties:
+      message:
+        type: string
+      statusCode:
+        type: integer
+    type: object
+  api.AdminChartDetailResp:
+    properties:
+      chart:
+        $ref: '#/definitions/api.ChartInfoV1'
+      message:
+        type: string
+      statusCode:
+        type: integer
+    type: object
+  api.AdminChartListResp:
+    properties:
+      charts:
+        items:
+          $ref: '#/definitions/api.ChartInfoV1'
+        type: array
+      message:
+        type: string
+      statusCode:
+        type: integer
+      total:
+        type: integer
+    type: object
+  api.AdminCreateLogReq:
+    properties:
+      ip:
+        type: string
+      method:
+        type: string
+      operation:
+        type: string
+      path:
+        type: string
+      userId:
+        minimum: 1
+        type: integer
+    required:
+    - ip
+    - method
+    - operation
+    - path
+    - userId
+    type: object
+  api.AdminCreateLogResp:
+    properties:
+      logId:
+        type: integer
+      message:
+        type: string
+      statusCode:
+        type: integer
+    type: object
+  api.AdminCreateUserReq:
+    properties:
+      userAccount:
+        maxLength: 16
+        minLength: 6
+        type: string
+      userPassword:
+        maxLength: 24
+        minLength: 8
+        type: string
+      userRole:
+        enum:
+        - admin
+        - user
+        type: string
+    required:
+    - userAccount
+    - userPassword
+    - userRole
+    type: object
+  api.AdminCreateUserResp:
+    properties:
+      message:
+        type: string
+      statusCode:
+        type: integer
+      userId:
+        type: integer
+    type: object
+  api.AdminDeleteChartResp:
+    properties:
+      message:
+        type: string
+      statusCode:
+        type: integer
+    type: object
+  api.AdminDeleteLogReq:
+    properties:
+      logId:
+        minimum: 1
+        type: integer
+    required:
+    - logId
+    type: object
+  api.AdminDeleteLogResp:
+    properties:
+      message:
+        type: string
+      statusCode:
+        type: integer
+    type: object
+  api.AdminDeleteUserReq:
+    properties:
+      userId:
+        minimum: 1
+        type: integer
+    required:
+    - userId
+    type: object
+  api.AdminDeleteUserResp:
+    properties:
+      message:
+        type: string
+      statusCode:
+        type: integer
+    type: object
+  api.AdminDisableUserReq:
+    properties:
+      status:
+        description: 0-正常, 1-禁用
+        enum:
+        - 0
+        - 1
+        type: integer
+      userId:
+        minimum: 1
+        type: integer
+    required:
+    - status
+    - userId
+    type: object
+  api.AdminDisableUserResp:
+    properties:
+      message:
+        type: string
+      statusCode:
+        type: integer
+    type: object
+  api.AdminLogDetailResp:
+    properties:
+      log:
+        $ref: '#/definitions/api.OperationLog'
+      message:
+        type: string
+      statusCode:
+        type: integer
+    type: object
+  api.AdminLogListResp:
+    properties:
+      logs:
+        items:
+          $ref: '#/definitions/api.OperationLog'
+        type: array
+      message:
+        type: string
+      statusCode:
+        type: integer
+      total:
+        type: integer
+    type: object
+  api.AdminUpdateChartResp:
+    properties:
+      message:
+        type: string
+      statusCode:
+        type: integer
+    type: object
+  api.AdminUpdateLogReq:
+    properties:
+      ip:
+        type: string
+      logId:
+        minimum: 1
+        type: integer
+      method:
+        type: string
+      operation:
+        type: string
+      path:
+        type: string
+    required:
+    - logId
+    type: object
+  api.AdminUpdateLogResp:
+    properties:
+      message:
+        type: string
+      statusCode:
+        type: integer
+    type: object
+  api.AdminUpdateUserReq:
+    properties:
+      userAccount:
+        type: string
+      userAvatar:
+        type: string
+      userId:
+        minimum: 1
+        type: integer
+      userName:
+        type: string
+      userPassword:
+        type: string
+      userRole:
+        enum:
+        - admin
+        - user
+        type: string
+    required:
+    - userId
+    type: object
+  api.AdminUpdateUserResp:
+    properties:
+      message:
+        type: string
+      statusCode:
+        type: integer
+    type: object
+  api.AdminUserDetailResp:
+    properties:
+      message:
+        type: string
+      statusCode:
+        type: integer
+      user:
+        $ref: '#/definitions/api.UserInfoV1'
+    type: object
+  api.AdminUserListResp:
+    properties:
+      message:
+        type: string
+      statusCode:
+        type: integer
+      total:
+        type: integer
+      users:
+        items:
+          $ref: '#/definitions/api.UserInfoV1'
+        type: array
+    type: object
   api.ChartInfoV0:
     properties:
       chartCode:
@@ -16,6 +274,29 @@ definitions:
         type: string
       updateTime:
         type: string
+    type: object
+  api.ChartInfoV1:
+    properties:
+      chartCode:
+        type: string
+      chartGoal:
+        type: string
+      chartId:
+        type: integer
+      chartName:
+        type: string
+      chartResult:
+        type: string
+      chartType:
+        type: string
+      status:
+        type: string
+      updateTime:
+        type: string
+      userAccount:
+        type: string
+      userId:
+        type: integer
     type: object
   api.CurrentUserDetailResp:
     properties:
@@ -72,6 +353,27 @@ definitions:
       statusCode:
         type: integer
     type: object
+  api.OperationLog:
+    properties:
+      createTime:
+        type: string
+      id:
+        type: integer
+      ip:
+        type: string
+      method:
+        type: string
+      operation:
+        type: string
+      path:
+        type: string
+      userAccount:
+        type: string
+      userId:
+        type: integer
+      userName:
+        type: string
+    type: object
   api.ShareChartResp:
     properties:
       accessCode:
@@ -111,6 +413,25 @@ definitions:
       userRole:
         description: 用户角色：user/admin
         type: string
+    type: object
+  api.UserInfoV1:
+    properties:
+      createTime:
+        type: string
+      id:
+        type: integer
+      updateTime:
+        type: string
+      userAccount:
+        type: string
+      userAvatar:
+        type: string
+      userName:
+        type: string
+      userRole:
+        type: string
+      userStatus:
+        type: integer
     type: object
   api.UserLoginOutResp:
     properties:
@@ -169,6 +490,372 @@ info:
   title: txnbi API
   version: "1.0"
 paths:
+  /admin/chart/delete:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 管理员删除图表接口
+      parameters:
+      - description: 图表ID
+        in: formData
+        name: chartID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.AdminDeleteChartResp'
+      summary: 管理员删除图表接口
+      tags:
+      - admin-chart
+  /admin/chart/detail:
+    get:
+      description: 管理员获取图表详情接口
+      parameters:
+      - description: 图表ID
+        in: query
+        name: chartID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.AdminChartDetailResp'
+      summary: 管理员获取图表详情接口
+      tags:
+      - admin-chart
+  /admin/chart/list:
+    get:
+      description: 管理员获取图表列表接口
+      parameters:
+      - in: query
+        name: keyword
+        type: string
+      - in: query
+        minimum: 1
+        name: page
+        required: true
+        type: integer
+      - in: query
+        maximum: 100
+        minimum: 1
+        name: pageSize
+        required: true
+        type: integer
+      - in: query
+        name: userId
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.AdminChartListResp'
+      summary: 管理员获取图表列表接口
+      tags:
+      - admin-chart
+  /admin/chart/update:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 管理员更新图表接口
+      parameters:
+      - description: 图表ID
+        in: formData
+        name: chartID
+        required: true
+        type: integer
+      - description: 图表名称
+        in: formData
+        name: chartName
+        type: string
+      - description: 分析目标
+        in: formData
+        name: chartGoal
+        type: string
+      - description: 分析结果
+        in: formData
+        name: genResult
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.AdminUpdateChartResp'
+      summary: 管理员更新图表接口
+      tags:
+      - admin-chart
+  /admin/log/batchDelete:
+    post:
+      description: 管理员批量删除日志
+      parameters:
+      - description: 日志ID列表
+        in: body
+        name: log
+        required: true
+        schema:
+          $ref: '#/definitions/api.AdminBatchDeleteLogReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.AdminBatchDeleteLogResp'
+      summary: 管理员批量删除日志
+      tags:
+      - admin-log
+  /admin/log/create:
+    post:
+      description: 管理员创建日志
+      parameters:
+      - description: 日志信息
+        in: body
+        name: log
+        required: true
+        schema:
+          $ref: '#/definitions/api.AdminCreateLogReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.AdminCreateLogResp'
+      summary: 管理员创建日志
+      tags:
+      - admin-log
+  /admin/log/delete:
+    post:
+      description: 管理员删除日志
+      parameters:
+      - description: 日志ID
+        in: body
+        name: log
+        required: true
+        schema:
+          $ref: '#/definitions/api.AdminDeleteLogReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.AdminDeleteLogResp'
+      summary: 管理员删除日志
+      tags:
+      - admin-log
+  /admin/log/detail:
+    get:
+      description: 管理员获取日志详情
+      parameters:
+      - description: 日志ID
+        in: query
+        name: logId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.AdminLogDetailResp'
+      summary: 管理员获取日志详情
+      tags:
+      - admin-log
+  /admin/log/list:
+    get:
+      description: 管理员获取日志列表
+      parameters:
+      - description: 页码
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: 每页数量
+        in: query
+        name: pageSize
+        required: true
+        type: integer
+      - description: 搜索关键词
+        in: query
+        name: keyword
+        type: string
+      - description: 开始时间
+        in: query
+        name: startTime
+        type: string
+      - description: 结束时间
+        in: query
+        name: endTime
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.AdminLogListResp'
+      summary: 管理员获取日志列表
+      tags:
+      - admin-log
+  /admin/log/update:
+    post:
+      description: 管理员更新日志
+      parameters:
+      - description: 日志信息
+        in: body
+        name: log
+        required: true
+        schema:
+          $ref: '#/definitions/api.AdminUpdateLogReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.AdminUpdateLogResp'
+      summary: 管理员更新日志
+      tags:
+      - admin-log
+  /admin/user/create:
+    post:
+      description: 管理员创建用户
+      parameters:
+      - description: 用户信息
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/api.AdminCreateUserReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.AdminCreateUserResp'
+      summary: 管理员创建用户
+      tags:
+      - admin
+  /admin/user/delete:
+    post:
+      description: 管理员删除用户
+      parameters:
+      - description: 用户ID
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/api.AdminDeleteUserReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.AdminDeleteUserResp'
+      summary: 管理员删除用户
+      tags:
+      - admin
+  /admin/user/detail:
+    get:
+      description: 管理员获取用户详情
+      parameters:
+      - description: 用户ID
+        in: query
+        name: userId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.AdminUserDetailResp'
+      summary: 管理员获取用户详情
+      tags:
+      - admin
+  /admin/user/disable:
+    post:
+      description: 管理员禁用/启用用户
+      parameters:
+      - description: 用户ID和状态
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/api.AdminDisableUserReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.AdminDisableUserResp'
+      summary: 管理员禁用/启用用户
+      tags:
+      - admin
+  /admin/user/list:
+    get:
+      description: 管理员获取用户列表
+      parameters:
+      - description: 页码
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: 每页数量
+        in: query
+        name: pageSize
+        required: true
+        type: integer
+      - description: 搜索关键词
+        in: query
+        name: keyword
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.AdminUserListResp'
+      summary: 管理员获取用户列表
+      tags:
+      - admin
+  /admin/user/update:
+    post:
+      description: 管理员更新用户
+      parameters:
+      - description: 用户信息
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/api.AdminUpdateUserReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.AdminUpdateUserResp'
+      summary: 管理员更新用户
+      tags:
+      - admin
   /chart/auth/findMyChart:
     get:
       description: 用户获取自己的图表数据接口

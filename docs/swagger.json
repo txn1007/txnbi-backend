@@ -9,6 +9,566 @@
     "host": "localhost:8080",
     "basePath": "/",
     "paths": {
+        "/admin/chart/delete": {
+            "post": {
+                "description": "管理员删除图表接口",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin-chart"
+                ],
+                "summary": "管理员删除图表接口",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "图表ID",
+                        "name": "chartID",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.AdminDeleteChartResp"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/chart/detail": {
+            "get": {
+                "description": "管理员获取图表详情接口",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin-chart"
+                ],
+                "summary": "管理员获取图表详情接口",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "图表ID",
+                        "name": "chartID",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.AdminChartDetailResp"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/chart/list": {
+            "get": {
+                "description": "管理员获取图表列表接口",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin-chart"
+                ],
+                "summary": "管理员获取图表列表接口",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "name": "keyword",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "maximum": 100,
+                        "minimum": 1,
+                        "type": "integer",
+                        "name": "pageSize",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "name": "userId",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.AdminChartListResp"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/chart/update": {
+            "post": {
+                "description": "管理员更新图表接口",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin-chart"
+                ],
+                "summary": "管理员更新图表接口",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "图表ID",
+                        "name": "chartID",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "图表名称",
+                        "name": "chartName",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "分析目标",
+                        "name": "chartGoal",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "分析结果",
+                        "name": "genResult",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.AdminUpdateChartResp"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/log/batchDelete": {
+            "post": {
+                "description": "管理员批量删除日志",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin-log"
+                ],
+                "summary": "管理员批量删除日志",
+                "parameters": [
+                    {
+                        "description": "日志ID列表",
+                        "name": "log",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.AdminBatchDeleteLogReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.AdminBatchDeleteLogResp"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/log/create": {
+            "post": {
+                "description": "管理员创建日志",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin-log"
+                ],
+                "summary": "管理员创建日志",
+                "parameters": [
+                    {
+                        "description": "日志信息",
+                        "name": "log",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.AdminCreateLogReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.AdminCreateLogResp"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/log/delete": {
+            "post": {
+                "description": "管理员删除日志",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin-log"
+                ],
+                "summary": "管理员删除日志",
+                "parameters": [
+                    {
+                        "description": "日志ID",
+                        "name": "log",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.AdminDeleteLogReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.AdminDeleteLogResp"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/log/detail": {
+            "get": {
+                "description": "管理员获取日志详情",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin-log"
+                ],
+                "summary": "管理员获取日志详情",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "日志ID",
+                        "name": "logId",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.AdminLogDetailResp"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/log/list": {
+            "get": {
+                "description": "管理员获取日志列表",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin-log"
+                ],
+                "summary": "管理员获取日志列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页数量",
+                        "name": "pageSize",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "搜索关键词",
+                        "name": "keyword",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "开始时间",
+                        "name": "startTime",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "结束时间",
+                        "name": "endTime",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.AdminLogListResp"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/log/update": {
+            "post": {
+                "description": "管理员更新日志",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin-log"
+                ],
+                "summary": "管理员更新日志",
+                "parameters": [
+                    {
+                        "description": "日志信息",
+                        "name": "log",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.AdminUpdateLogReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.AdminUpdateLogResp"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/user/create": {
+            "post": {
+                "description": "管理员创建用户",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin"
+                ],
+                "summary": "管理员创建用户",
+                "parameters": [
+                    {
+                        "description": "用户信息",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.AdminCreateUserReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.AdminCreateUserResp"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/user/delete": {
+            "post": {
+                "description": "管理员删除用户",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin"
+                ],
+                "summary": "管理员删除用户",
+                "parameters": [
+                    {
+                        "description": "用户ID",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.AdminDeleteUserReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.AdminDeleteUserResp"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/user/detail": {
+            "get": {
+                "description": "管理员获取用户详情",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin"
+                ],
+                "summary": "管理员获取用户详情",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "用户ID",
+                        "name": "userId",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.AdminUserDetailResp"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/user/disable": {
+            "post": {
+                "description": "管理员禁用/启用用户",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin"
+                ],
+                "summary": "管理员禁用/启用用户",
+                "parameters": [
+                    {
+                        "description": "用户ID和状态",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.AdminDisableUserReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.AdminDisableUserResp"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/user/list": {
+            "get": {
+                "description": "管理员获取用户列表",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin"
+                ],
+                "summary": "管理员获取用户列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页数量",
+                        "name": "pageSize",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "搜索关键词",
+                        "name": "keyword",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.AdminUserListResp"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/user/update": {
+            "post": {
+                "description": "管理员更新用户",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin"
+                ],
+                "summary": "管理员更新用户",
+                "parameters": [
+                    {
+                        "description": "用户信息",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.AdminUpdateUserReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.AdminUpdateUserResp"
+                        }
+                    }
+                }
+            }
+        },
         "/chart/auth/findMyChart": {
             "get": {
                 "description": "用户获取自己的图表数据接口",
@@ -390,6 +950,394 @@
         }
     },
     "definitions": {
+        "api.AdminBatchDeleteLogReq": {
+            "type": "object",
+            "required": [
+                "logIds"
+            ],
+            "properties": {
+                "logIds": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "api.AdminBatchDeleteLogResp": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "statusCode": {
+                    "type": "integer"
+                }
+            }
+        },
+        "api.AdminChartDetailResp": {
+            "type": "object",
+            "properties": {
+                "chart": {
+                    "$ref": "#/definitions/api.ChartInfoV1"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "statusCode": {
+                    "type": "integer"
+                }
+            }
+        },
+        "api.AdminChartListResp": {
+            "type": "object",
+            "properties": {
+                "charts": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/api.ChartInfoV1"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "statusCode": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "api.AdminCreateLogReq": {
+            "type": "object",
+            "required": [
+                "ip",
+                "method",
+                "operation",
+                "path",
+                "userId"
+            ],
+            "properties": {
+                "ip": {
+                    "type": "string"
+                },
+                "method": {
+                    "type": "string"
+                },
+                "operation": {
+                    "type": "string"
+                },
+                "path": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "integer",
+                    "minimum": 1
+                }
+            }
+        },
+        "api.AdminCreateLogResp": {
+            "type": "object",
+            "properties": {
+                "logId": {
+                    "type": "integer"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "statusCode": {
+                    "type": "integer"
+                }
+            }
+        },
+        "api.AdminCreateUserReq": {
+            "type": "object",
+            "required": [
+                "userAccount",
+                "userPassword",
+                "userRole"
+            ],
+            "properties": {
+                "userAccount": {
+                    "type": "string",
+                    "maxLength": 16,
+                    "minLength": 6
+                },
+                "userPassword": {
+                    "type": "string",
+                    "maxLength": 24,
+                    "minLength": 8
+                },
+                "userRole": {
+                    "type": "string",
+                    "enum": [
+                        "admin",
+                        "user"
+                    ]
+                }
+            }
+        },
+        "api.AdminCreateUserResp": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "statusCode": {
+                    "type": "integer"
+                },
+                "userId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "api.AdminDeleteChartResp": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "statusCode": {
+                    "type": "integer"
+                }
+            }
+        },
+        "api.AdminDeleteLogReq": {
+            "type": "object",
+            "required": [
+                "logId"
+            ],
+            "properties": {
+                "logId": {
+                    "type": "integer",
+                    "minimum": 1
+                }
+            }
+        },
+        "api.AdminDeleteLogResp": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "statusCode": {
+                    "type": "integer"
+                }
+            }
+        },
+        "api.AdminDeleteUserReq": {
+            "type": "object",
+            "required": [
+                "userId"
+            ],
+            "properties": {
+                "userId": {
+                    "type": "integer",
+                    "minimum": 1
+                }
+            }
+        },
+        "api.AdminDeleteUserResp": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "statusCode": {
+                    "type": "integer"
+                }
+            }
+        },
+        "api.AdminDisableUserReq": {
+            "type": "object",
+            "required": [
+                "status",
+                "userId"
+            ],
+            "properties": {
+                "status": {
+                    "description": "0-正常, 1-禁用",
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ]
+                },
+                "userId": {
+                    "type": "integer",
+                    "minimum": 1
+                }
+            }
+        },
+        "api.AdminDisableUserResp": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "statusCode": {
+                    "type": "integer"
+                }
+            }
+        },
+        "api.AdminLogDetailResp": {
+            "type": "object",
+            "properties": {
+                "log": {
+                    "$ref": "#/definitions/api.OperationLog"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "statusCode": {
+                    "type": "integer"
+                }
+            }
+        },
+        "api.AdminLogListResp": {
+            "type": "object",
+            "properties": {
+                "logs": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/api.OperationLog"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "statusCode": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "api.AdminUpdateChartResp": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "statusCode": {
+                    "type": "integer"
+                }
+            }
+        },
+        "api.AdminUpdateLogReq": {
+            "type": "object",
+            "required": [
+                "logId"
+            ],
+            "properties": {
+                "ip": {
+                    "type": "string"
+                },
+                "logId": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "method": {
+                    "type": "string"
+                },
+                "operation": {
+                    "type": "string"
+                },
+                "path": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.AdminUpdateLogResp": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "statusCode": {
+                    "type": "integer"
+                }
+            }
+        },
+        "api.AdminUpdateUserReq": {
+            "type": "object",
+            "required": [
+                "userId"
+            ],
+            "properties": {
+                "userAccount": {
+                    "type": "string"
+                },
+                "userAvatar": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "userName": {
+                    "type": "string"
+                },
+                "userPassword": {
+                    "type": "string"
+                },
+                "userRole": {
+                    "type": "string",
+                    "enum": [
+                        "admin",
+                        "user"
+                    ]
+                }
+            }
+        },
+        "api.AdminUpdateUserResp": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "statusCode": {
+                    "type": "integer"
+                }
+            }
+        },
+        "api.AdminUserDetailResp": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "statusCode": {
+                    "type": "integer"
+                },
+                "user": {
+                    "$ref": "#/definitions/api.UserInfoV1"
+                }
+            }
+        },
+        "api.AdminUserListResp": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "statusCode": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                },
+                "users": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/api.UserInfoV1"
+                    }
+                }
+            }
+        },
         "api.ChartInfoV0": {
             "type": "object",
             "properties": {
@@ -413,6 +1361,41 @@
                 },
                 "updateTime": {
                     "type": "string"
+                }
+            }
+        },
+        "api.ChartInfoV1": {
+            "type": "object",
+            "properties": {
+                "chartCode": {
+                    "type": "string"
+                },
+                "chartGoal": {
+                    "type": "string"
+                },
+                "chartId": {
+                    "type": "integer"
+                },
+                "chartName": {
+                    "type": "string"
+                },
+                "chartResult": {
+                    "type": "string"
+                },
+                "chartType": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "updateTime": {
+                    "type": "string"
+                },
+                "userAccount": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "integer"
                 }
             }
         },
@@ -500,6 +1483,38 @@
                 }
             }
         },
+        "api.OperationLog": {
+            "type": "object",
+            "properties": {
+                "createTime": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "ip": {
+                    "type": "string"
+                },
+                "method": {
+                    "type": "string"
+                },
+                "operation": {
+                    "type": "string"
+                },
+                "path": {
+                    "type": "string"
+                },
+                "userAccount": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "integer"
+                },
+                "userName": {
+                    "type": "string"
+                }
+            }
+        },
         "api.ShareChartResp": {
             "type": "object",
             "properties": {
@@ -555,6 +1570,35 @@
                 "userRole": {
                     "description": "用户角色：user/admin",
                     "type": "string"
+                }
+            }
+        },
+        "api.UserInfoV1": {
+            "type": "object",
+            "properties": {
+                "createTime": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "updateTime": {
+                    "type": "string"
+                },
+                "userAccount": {
+                    "type": "string"
+                },
+                "userAvatar": {
+                    "type": "string"
+                },
+                "userName": {
+                    "type": "string"
+                },
+                "userRole": {
+                    "type": "string"
+                },
+                "userStatus": {
+                    "type": "integer"
                 }
             }
         },

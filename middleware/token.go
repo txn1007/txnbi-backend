@@ -1,11 +1,12 @@
 package middleware
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"txnbi-backend/conf"
 	"txnbi-backend/internal/store/myRedis"
 	"txnbi-backend/pkg/jwt"
+
+	"github.com/gin-gonic/gin"
 )
 
 func AuthUserToken() gin.HandlerFunc {

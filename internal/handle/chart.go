@@ -1,14 +1,15 @@
 package handle
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/rs/zerolog/log"
 	"net/http"
 	"path/filepath"
 	"slices"
 	"txnbi-backend/api"
 	"txnbi-backend/errs"
-	"txnbi-backend/internal/biz"
+	biz "txnbi-backend/internal/biz/user"
+
+	"github.com/gin-gonic/gin"
+	"github.com/rs/zerolog/log"
 )
 
 // GenChart godoc

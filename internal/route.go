@@ -1,12 +1,13 @@
 package internal
 
 import (
-	"github.com/gin-gonic/gin"
-	swaggerFiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
 	"txnbi-backend/internal/handle"
 	"txnbi-backend/middleware"
 	"txnbi-backend/middleware/myLimiter"
+
+	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func Route() *gin.Engine {
@@ -42,7 +43,32 @@ func Route() *gin.Engine {
 			authGroup.POST("/update", handle.UpdateChart)
 			authGroup.POST("/share", handle.ShareChart)
 		}
+	}
 
+	// 管理员模块
+	adminGroupMiddle := []gin.HandlerFunc{myLimiter.New("admin", myLimiter.LowLevel), middleware.AuthUserToken()}
+	adminGroup := routes.Group("/admin", adminGroupMiddle...)
+	{
+		// 管理员用户管理接口
+		adminGroup.GET("/user/list", handle.AdminListUsers)
+		adminGroup.GET("/user/detail", handle.AdminGetUserDetail)
+		adminGroup.POST("/user/create", handle.AdminCreateUser)
+		adminGroup.POST("/user/update", handle.AdminUpdateUser)
+		adminGroup.POST("/user/delete", handle.AdminDeleteUser)
+
+		// 管理员图表管理接口
+		adminGroup.GET("/chart/list", handle.AdminListCharts)
+		adminGroup.GET("/chart/detail", handle.AdminGetChartDetail)
+		adminGroup.POST("/chart/update", handle.AdminUpdateChart)
+		adminGroup.POST("/chart/delete", handle.AdminDeleteChart)
+
+		// 管理员日志相关接口
+		adminGroup.GET("/log/list", handle.AdminListLogs)
+		adminGroup.GET("/log/detail", handle.AdminGetLogDetail)
+		adminGroup.POST("/log/create", handle.AdminCreateLog)
+		adminGroup.POST("/log/update", handle.AdminUpdateLog)
+		adminGroup.POST("/log/delete", handle.AdminDeleteLog)
+		adminGroup.POST("/log/batchDelete", handle.AdminBatchDeleteLogs)
 	}
 
 	routes.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
