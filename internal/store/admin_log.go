@@ -15,7 +15,7 @@ func AdminListLogs(ctx context.Context, offset, limit int, keyword string, start
 
 	// 添加时间范围条件
 	if !startTime.IsZero() && !endTime.IsZero() {
-		db = db.Where("create_time BETWEEN ? AND ?", startTime, endTime)
+		db = db.Where("createTime BETWEEN ? AND ?", startTime, endTime)
 	}
 
 	// 如果有关键字，添加搜索条件
@@ -31,7 +31,7 @@ func AdminListLogs(ctx context.Context, offset, limit int, keyword string, start
 	}
 
 	// 分页查询
-	err = db.Offset(offset).Limit(limit).Order("create_time DESC").Find(&logs).Error
+	err = db.Offset(offset).Limit(limit).Order("createTime DESC").Find(&logs).Error
 	if err != nil {
 		return nil, 0, err
 	}

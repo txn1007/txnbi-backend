@@ -43,9 +43,9 @@ type AdminUserDetailResp struct {
 
 // AdminCreateUserReq 管理员创建用户请求
 type AdminCreateUserReq struct {
-	UserAccount  string `json:"userAccount" binding:"required,min=6,max=16"`
-	UserPassword string `json:"userPassword" binding:"required,min=8,max=24"`
-	UserRole     string `json:"userRole" binding:"required,oneof=admin user"`
+	UserAccount  string `json:"userAccount" form:"userAccount" binding:"required,min=6,max=16"`
+	UserPassword string `json:"userPassword" form:"userPassword" binding:"required,min=8,max=24"`
+	UserRole     string `json:"userRole" form:"userRole" binding:"required,oneof=admin user"`
 }
 
 // AdminCreateUserResp 管理员创建用户响应

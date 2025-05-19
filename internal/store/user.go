@@ -34,6 +34,7 @@ func CreateUser(u model.User) (userID int64, err error) {
 	randomUserName := fmt.Sprintf("user_%d", time.Now().Unix()%1000000)
 	u.UserName = randomUserName
 	u.UserAvatar = "https://tiktokk-1331222828.cos.ap-guangzhou.myqcloud.com/avatar/avatar-tem.jpg"
+	u.LastLogin = time.Now()
 	err = DB.Create(&u).Error
 	if err != nil {
 		return 0, err

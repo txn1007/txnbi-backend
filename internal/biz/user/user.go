@@ -41,7 +41,7 @@ func UserLogin(account string, password string) (token string, err error) {
 
 func UserRegister(ctx context.Context, account, password, inviteCode string) error {
 	// 检查邀请码是否存在
-	is, err := myRedis2.IsInviteCode(inviteCode)
+	is, err := store.IsInviteCode(inviteCode)
 	if !is {
 		return fmt.Errorf("邀请码不存在！")
 	}
@@ -289,12 +289,12 @@ func UpdateUserRole(ctx context.Context, userID int64, roleID int64) error {
 // CreateInviteCode 创建邀请码
 func CreateInviteCode(ctx context.Context, code string, maxUses int, expireTime time.Time) error {
 	// 检查邀请码是否已存在
-	exists, _ := myRedis2.IsInviteCode(code)
+	exists, _ := store.IsInviteCode(code)
 	if exists {
 		return fmt.Errorf("邀请码已存在")
 	}
 
-	return myRedis2.SetInviteCode(code, maxUses, expireTime)
+	return store.SetInviteCode(code, maxUses, expireTime)
 }
 
 // GetInviteCodeList 获取邀请码列表
